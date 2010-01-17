@@ -1,7 +1,7 @@
 /**
  *	Version 0.7
  *	Copyright (C) 2009-2010 Ivo Wetzel
- *	<http://code.google.com/p/bonsaigamelibrary/>
+ *	<http://github.com/BonsaiLeaf/Tuff>
  *
  *
  *  This file is part of Tuff.
