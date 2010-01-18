@@ -64,12 +64,13 @@ public class TuffMap extends GameObject<Tuff> {
 	private List<int[]> normalTileList = new ArrayList<int[]>();
 	private List<int[]> transparentTileList = new ArrayList<int[]>();
 	private Map<Integer, Long> breakedBlocks = new HashMap<Integer, Long>();
-	
+
 	// Value
-	protected String[] powerModes = new String[] { "J", "W", "U", "D", "B", "S" };
+	protected String[] powerModes =
+			new String[] { "J", "W", "U", "D", "B", "S" };
 	protected int rainbowCount = 0;
 	private Color blockColor = new Color(152, 152, 152);
-	
+
 	// Images
 	private BufferedImage[] borderTiles;
 	private BufferedImage[] treeTiles;
@@ -647,10 +648,11 @@ public class TuffMap extends GameObject<Tuff> {
 				if (breakedBlocks.containsKey(id)) {
 					time = getTime() - breakedBlocks.get(id);
 				}
-				if (time < 100 || time > 2500) {
+				if (time < 75 || time > 2500) {
 					if (x >= i[1] * tileSize && x <= i[1] * tileSize + 16) {
 						if (y >= i[2] * tileSize && y <= i[2] * tileSize + 16) {
-							if (!breakedBlocks.containsKey(id) && player && y <= i[2] * tileSize) {
+							if (!breakedBlocks.containsKey(id) && player
+									&& y <= i[2] * tileSize) {
 								breakedBlocks.put(id, getTime());
 							}
 							return 1;
@@ -1076,17 +1078,17 @@ public class TuffMap extends GameObject<Tuff> {
 						time = getTime() - breakedBlocks.get(id);
 						img = (int) Math.min(6, time / 50);
 						if (time > 2000) {
+							img = 6 - (int) Math.min(6, (time - 2000) / 50);
+							if (img < 0) {
+								img = 0;
+							}
 							if (!player.at(p[1] * tileSize, p[2] * tileSize,
 									16, 16)) {
-								img = 6 - (int) Math.min(6, (time - 2000) / 50);
-								if (img < 0) {
-									img = 0;
-								}
 								if (time > 2500) {
 									breakedBlocks.remove(id);
 								}
-							} else {
-								breakedBlocks.put(id, getTime() - 2000);
+						//	} else {
+						//		breakedBlocks.put(id, getTime() - time);
 							}
 						}
 					}
