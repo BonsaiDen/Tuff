@@ -156,326 +156,14 @@ public class Player extends PlayerObject {
 					input.keyDown(java.awt.event.KeyEvent.VK_S)
 							|| input.keyDown(java.awt.event.KeyEvent.VK_DOWN);
 
-			// Init Speed
-			if (hasSpeed) {
-				if ((KEY_LEFT || KEY_RIGHT) && speedHeight == posY && !inWater) {
-					if (speedPos - posX > 48 && speedActive == 0) {
-						speedActive = 1;
-						speedSide = 0;
-
-					} else if (speedPos - posX < -48 && speedActive == 0) {
-						speedActive = 1;
-						speedSide = 1;
-						
-					} else if (speedPos - posX > 112 && speedActive == 1) {
-						speedActive = 2;
-						speedSide = 0;
-						dashes.clear();
-						timer.set("dashes", -350);
-
-					} else if (speedPos - posX < -112 && speedActive == 1) {
-						speedActive = 2;
-						speedSide = 1;
-						dashes.clear();
-						timer.set("dashes", -350);
-					}
-				} else {
-					speedHeight = posY;
-					speedPos = posX;
-					if (speedActive != 0) {
-						speedActive = 0;
-						breakImage = false;
-					}
-				}
-				if (speedActive != 0) {
-					if (speedHeight != posY || (KEY_RIGHT && speedSide == 0)
-							|| (KEY_LEFT && speedSide == 1)) {
-						speedActive = 0;
-						speedPos = posX;
-						breakImage = false;
-					}
-				}
-			}
-
-			// Breaker
-			if (!isBreaker) {
-				if (!KEY_DOWN || !onGround || !hasBreak) {
-					timer.set("break");
-				}
-				if (timer.expired("break")) {
-					timer.set("break");
-					isBreaker = true;
-				}
-			} else {
-				if (timer.expired("break", 3000)) {
-					isBreaker = false;
-					breakImage = false;
-				}
-			}
-
-			if (isBreaker || speedActive > 1) {
-				if (timer.expired("breakBlink")) {
-					breakImage = !breakImage;
-					if (!isBreaker && speedActive == 0) {
-						breakImage = false;
-					}
-					timer.set("breakBlink");
-				}
-			}
-
-			// Water
-			boolean topWater = map.waterAt(posX, posY - 12, true);
-			boolean outOfWater = map.waterAt(posX, posY - 26, true);
-			boolean oldWater = inWater;
-			boolean oldWaterLow = inWaterLow;
-			inWater = map.waterAt(posX, posY - 3, false);
-			inWaterLow = map.waterAt(posX, posY - 1, false);
-			if (inWater) {
-				timer.set("outWater");
-			}
-			if (inWater && topWater) {
-				fullWater = true;
-			} else {
-				timer.set("fullWater");
-			}
-
-			// Swimming
-			if (!oldWater && inWater) {
-				waterPosY = getWaterLevel();
-				if (posY - waterPosY < 20) {
-					isDiving = false;
-				} else {
-					isDiving = true;
-				}
-				atWallInit = -1;
-			}
-			if (onGround) {
-				waterJumps = 0;
-				moveWall = false;
-			}
-
-			// Splash Sound
-			if (!oldWaterLow && inWaterLow && grav > 0.0f
-					&& timer.expired("inWater")
-					&& !map.waterAt(posX, posY - 7, false)) {
-				atWallInit = -1;
-				game.playSound(grav > 1.5f ? "splash" : "swim", true);
-				timer.set("inWater");
-				timer.set("swim");
-				grav = grav / 2;
-			}
-
-			// Diving
-			if (speedActive == 1) {
-				speed = 4;
-			} else if (speedActive == 2) {
-				speed = 9;
-			} else if (inWater) {
-				speed = 2;
-			} else {
-				speed = 3;
-			}
-			if (inWater && !onGround && hasDive) {
-				if (input.keyPressed(java.awt.event.KeyEvent.VK_S)) {
-					timer.set("dive");
-					grav += 3.0f;
-					game.playSound("dive", true);
-				}
-			}
-
-			// Dashing
-			if (!superJumping && hasSuperJump) {
-				if (!KEY_DOWN || !onGround || !hasSuperJump) {
-					timer.set("superJump");
-				}
-				if (KEY_JUMP
-						&& (timer.expired("superJump") || (isBreaker && onGround))
-						&& !superJumping) {
-					superJumping = true;
-					dashes.clear();
-					timer.set("dashes", -350);
-					timer.set("superJump");
-				}
-			} else {
-				if (timer.expired("superJump", 220)) {
-					superJumping = false;
-					timer.set("superJump");
-				}
-			}
-
-			if (superJumping || speedActive > 1) {
-				if (timer.expired("dashes")) {
-					if (dashes.size() > 2) {
-						dashes.remove(0);
-					}
-					dashes.add(new int[] { posX, posY });
-					timer.set("dashes");
-				}
-			}
-
-			// Down Stuff
-			if (KEY_DOWN) {
-				timer.set("moved");
-				moveWall = false;
-				timer.set("moveWall", -5000);
-				if (inWater && hasDive) {
-					if (!isDiving) {
-						isDiving = true;
-						game.playSound("dive", true);
-					}
-				}
-			}
-
-			// Movement
-			if (superJumping && input.keyDown(java.awt.event.KeyEvent.VK_SPACE)) {
-				grav = -8f;
-			}
-			// moveWall = false;
-			if (moveX > 0.0) {
-				moveX -= 0.09f;
-			}
-			if (moveX < 0.0) {
-				moveX += 0.09f;
-			}
-			if (moveX > -0.1f && moveX < 0.1f) {
-				moveX = 0.0f;
-			}
-			if (moveX < 0.0f
-					|| ((((!KEY_DOWN || !onGround) || !hasSuperJump) || (inWater && !KEY_DOWN))
-							&& KEY_LEFT && moveX <= 0.15f)
-					&& (timer.expired("offWall") || wallSide != 0)) {
-				moveX(0);
-				if (KEY_LEFT && inWater) {
-					moveX = -0.5f;
-				}
-			}
-			if (moveX > 0.0f
-					|| ((((!KEY_DOWN || !onGround) || !hasSuperJump) || (inWater && !KEY_DOWN))
-							&& KEY_RIGHT && moveX >= -0.15f)
-					&& (timer.expired("offWall") || wallSide != 1)) {
-				moveX(1);
-				if (KEY_RIGHT && inWater) {
-					moveX = 0.5f;
-				}
-			}
-			if (KEY_DOWN) {
-				if (input.keyPressed(java.awt.event.KeyEvent.VK_A)) {
-					side = 0;
-				} else if (input.keyPressed(java.awt.event.KeyEvent.VK_D)) {
-					side = 1;
-				}
-			}
-
-			if (posX > oldX) {
-				side = 1;
-			} else if (posX < oldX) {
-				side = 0;
-			}
-			// Sounds
-			if (posX != oldX) {
-				int soundSpeed = 170;
-				if (speedActive == 1) {
-					soundSpeed = 150;
-				} else if (speedActive == 2) {
-					soundSpeed = 75;
-				}
-				if (onGround && timer.expired("walk", soundSpeed)) {
-					game.playSound("walk", true);
-					timer.set("walk");
-				}
-				if (inWater && !isDiving && timer.expired("swim")) {
-					game.playSound("swim", true);
-					timer.set("swim");
-				}
-			}
-
-			// Height
-			boolean doubleWall = false;
-			if (!inWater) {
-				checkWallJump();
-				if (moveWall) {
-					moveWallX = posX;
-					moveWallY = posY;
-				}
-				doubleWall =
-						map.hasColAt(posX + 11, posY - 7)
-								&& map.hasColAt(posX - 12, posY - 7);
-
-				if (timer.expired("moveWall") || doubleWall) {
-					moveWall = false;
-				}
-			} else {
-				moveWall = false;
-			}
-
-			// Jumping
-			if (hasHighJump) {
-				jumpGrav = -7.9f;
-				addGrav = 0.75f;
-			} else {
-				jumpGrav = -7.2f;
-				addGrav = 1f;
-			}
-
-			if (KEY_JUMP) {
-				// Out of Water
-				if (inWater && (grav >= 0.0f || onGround)) {
-					boolean out = !outOfWater;
-					if (!fullWater) {
-						out = false;
-						waterJumps += 1;
-						if (waterJumps > 2) {
-							out = true;
-							waterJumps = 0;
-						}
-					}
-					if (!hasDive) {
-						out = true;
-					}
-					grav = jumpGrav / (out ? 1.0f : 1.5f);
-					game.playSound(out ? "jump" : "dive", false);
-					if (out) {
-						fullWater = false;
-					}
-					timer.set("jump");
-					timer.set("jumpWater");
-
-				} else if (onGround) {
-					grav = jumpGrav;
-					game.playSound("jump", false);
-					timer.set("jump");
-					timer.set("jumpWater");
-
-					// Walljump
-				} else if (wallSide != -1 && grav > 1.0f && hasWallJump
-						&& timer.pending("moveWall") && !doubleWall
-						&& Math.abs(moveWallX - posX) <= 5
-						&& Math.abs(moveWallY - posY) <= 5) {
-
-					if (wallSide == 0) {
-						moveX += 0.8f;
-					} else {
-						moveX -= 0.8f;
-					}
-
-					atWallInit = wallSide;
-					grav = jumpGrav;
-					moveWall = false;
-					game.playSound("jump", false);
-					timer.set("moveWall", -500);
-					timer.set("jump");
-					timer.set("jumpWater");
-					timer.set("offWall");
-
-					// Super Walljump
-					if (isBreaker) {
-						dashes.clear();
-						timer.set("dashes", -350);
-						superJumping = true;
-					}
-				}
-			}
-
+			// Stuff
+			controlSpeedBreakJump();
+			controlWater();
+			controlMovement();
+			controlJump();
+			
+			
+			// Gravity
 			if (moveWall) {
 				maxGrav = 1.25f;
 			} else {
@@ -518,7 +206,337 @@ public class Player extends PlayerObject {
 		}
 		animate();
 	}
+	
+	public void controlMovement() {
+		// Down Stuff
+		if (KEY_DOWN) {
+			timer.set("moved");
+			moveWall = false;
+			timer.set("moveWall", -5000);
+			if (inWater && hasDive) {
+				if (!isDiving) {
+					isDiving = true;
+					game.playSound("dive", true);
+				}
+			}
+		}
 
+		// Movement
+		if (speedActive == 1) {
+			speed = 4;
+		} else if (speedActive == 2) {
+			speed = 8;
+		} else if (inWater) {
+			speed = 2;
+		} else {
+			speed = 3;
+		}
+		if (superJumping && input.keyDown(java.awt.event.KeyEvent.VK_SPACE)) {
+			grav = -8f;
+		}
+		// moveWall = false;
+		if (moveX > 0.0) {
+			moveX -= 0.09f;
+		}
+		if (moveX < 0.0) {
+			moveX += 0.09f;
+		}
+		if (moveX > -0.1f && moveX < 0.1f) {
+			moveX = 0.0f;
+		}
+		if (moveX < 0.0f
+				|| ((((!KEY_DOWN || !onGround) || !hasSuperJump) || (inWater && !KEY_DOWN))
+						&& KEY_LEFT && moveX <= 0.15f)
+				&& (timer.expired("offWall") || wallSide != 0)) {
+			moveX(0);
+			if (KEY_LEFT && inWater) {
+				moveX = -0.5f;
+			}
+		}
+		if (moveX > 0.0f
+				|| ((((!KEY_DOWN || !onGround) || !hasSuperJump) || (inWater && !KEY_DOWN))
+						&& KEY_RIGHT && moveX >= -0.15f)
+				&& (timer.expired("offWall") || wallSide != 1)) {
+			moveX(1);
+			if (KEY_RIGHT && inWater) {
+				moveX = 0.5f;
+			}
+		}
+		if (KEY_DOWN) {
+			if (input.keyPressed(java.awt.event.KeyEvent.VK_A)) {
+				side = 0;
+			} else if (input.keyPressed(java.awt.event.KeyEvent.VK_D)) {
+				side = 1;
+			}
+		}
+
+		if (posX > oldX) {
+			side = 1;
+		} else if (posX < oldX) {
+			side = 0;
+		}
+		// Sounds
+		if (posX != oldX) {
+			int soundSpeed = 170;
+			if (speedActive == 1) {
+				soundSpeed = 150;
+			} else if (speedActive == 2) {
+				soundSpeed = 75;
+			}
+			if (onGround && timer.expired("walk", soundSpeed)) {
+				game.playSound("walk", true);
+				timer.set("walk");
+			}
+			if (inWater && !isDiving && timer.expired("swim")) {
+				game.playSound("swim", true);
+				timer.set("swim");
+			}
+		}
+
+	}
+	
+	public void controlJump() {
+		// Bewteen 2 walls
+		boolean doubleWall = false;
+		if (!inWater) {
+			checkWallJump();
+			if (moveWall) {
+				moveWallX = posX;
+				moveWallY = posY;
+			}
+			doubleWall =
+					map.hasColAt(posX + 11, posY - 7)
+							&& map.hasColAt(posX - 12, posY - 7);
+
+			if (timer.expired("moveWall") || doubleWall) {
+				moveWall = false;
+			}
+		} else {
+			moveWall = false;
+		}
+		
+		// Jumping height
+		if (hasHighJump) {
+			jumpGrav = -7.9f;
+			addGrav = 0.75f;
+		} else {
+			jumpGrav = -7.2f;
+			addGrav = 1f;
+		}
+
+		if (KEY_JUMP) {
+			// Out of Water
+			if (inWater && (grav >= 0.0f || onGround)) {
+				boolean out = !map.waterAt(posX, posY - 26, true);
+				if (!fullWater) {
+					out = false;
+					waterJumps += 1;
+					if (waterJumps > 2) {
+						out = true;
+						waterJumps = 0;
+					}
+				}
+				if (!hasDive) {
+					out = true;
+				}
+				grav = jumpGrav / (out ? 1.0f : 1.5f);
+				game.playSound(out ? "jump" : "dive", false);
+				if (out) {
+					fullWater = false;
+				}
+				timer.set("jump");
+				timer.set("jumpWater");
+
+			} else if (onGround) {
+				grav = jumpGrav;
+				game.playSound("jump", false);
+				timer.set("jump");
+				timer.set("jumpWater");
+
+				// Walljump
+			} else if (wallSide != -1 && grav > 1.0f && hasWallJump
+					&& timer.pending("moveWall") && !doubleWall
+					&& Math.abs(moveWallX - posX) <= 5
+					&& Math.abs(moveWallY - posY) <= 5) {
+
+				if (wallSide == 0) {
+					moveX += 0.8f;
+				} else {
+					moveX -= 0.8f;
+				}
+
+				atWallInit = wallSide;
+				grav = jumpGrav;
+				moveWall = false;
+				game.playSound("jump", false);
+				timer.set("moveWall", -500);
+				timer.set("jump");
+				timer.set("jumpWater");
+				timer.set("offWall");
+
+				// Super Walljump
+				if (isBreaker) {
+					dashes.clear();
+					timer.set("dashes", -350);
+					superJumping = true;
+				}
+			}
+		}
+	}
+
+	public void controlWater() {
+		// Water
+		boolean topWater = map.waterAt(posX, posY - 12, true);
+		boolean oldWater = inWater;
+		boolean oldWaterLow = inWaterLow;
+		inWater = map.waterAt(posX, posY - 3, false);
+		inWaterLow = map.waterAt(posX, posY - 1, false);
+		if (inWater) {
+			timer.set("outWater");
+		}
+		if (inWater && topWater) {
+			fullWater = true;
+		} else {
+			timer.set("fullWater");
+		}
+
+		// Swimming
+		if (!oldWater && inWater) {
+			waterPosY = getWaterLevel();
+			if (posY - waterPosY < 20) {
+				isDiving = false;
+			} else {
+				isDiving = true;
+			}
+			atWallInit = -1;
+		}
+		if (onGround) {
+			waterJumps = 0;
+			moveWall = false;
+		}
+
+		// Splash Sound
+		if (!oldWaterLow && inWaterLow && grav > 0.0f
+				&& timer.expired("inWater")
+				&& !map.waterAt(posX, posY - 7, false)) {
+			atWallInit = -1;
+			game.playSound(grav > 1.5f ? "splash" : "swim", true);
+			timer.set("inWater");
+			timer.set("swim");
+			grav = grav / 2;
+		}
+
+
+		if (inWater && !onGround && hasDive) {
+			if (input.keyPressed(java.awt.event.KeyEvent.VK_S)) {
+				timer.set("dive");
+				grav += 3.0f;
+				game.playSound("dive", true);
+			}
+		}
+	}
+	
+	public void controlSpeedBreakJump() {
+		// Init Speed
+		if (hasSpeed) {
+			if ((KEY_LEFT || KEY_RIGHT) && speedHeight == posY && !inWater) {
+				if (speedPos - posX > 48 && speedActive == 0) {
+					speedActive = 1;
+					speedSide = 0;
+
+				} else if (speedPos - posX < -48 && speedActive == 0) {
+					speedActive = 1;
+					speedSide = 1;
+					
+				} else if (speedPos - posX > 112 && speedActive == 1) {
+					speedActive = 2;
+					speedSide = 0;
+					dashes.clear();
+					timer.set("dashes", -350);
+
+				} else if (speedPos - posX < -112 && speedActive == 1) {
+					speedActive = 2;
+					speedSide = 1;
+					dashes.clear();
+					timer.set("dashes", -350);
+				}
+			} else {
+				speedHeight = posY;
+				speedPos = posX;
+				if (speedActive != 0) {
+					speedActive = 0;
+					breakImage = false;
+				}
+			}
+			if (speedActive != 0) {
+				if (speedHeight != posY || (KEY_RIGHT && speedSide == 0)
+						|| (KEY_LEFT && speedSide == 1)) {
+					speedActive = 0;
+					speedPos = posX;
+					breakImage = false;
+				}
+			}
+		}
+
+		// Breaker
+		if (!isBreaker) {
+			if (!KEY_DOWN || !onGround || !hasBreak) {
+				timer.set("break");
+			}
+			if (timer.expired("break")) {
+				timer.set("break");
+				isBreaker = true;
+			}
+		} else {
+			if (timer.expired("break", 3000)) {
+				isBreaker = false;
+				breakImage = false;
+			}
+		}
+
+		if (isBreaker || speedActive > 1) {
+			if (timer.expired("breakBlink")) {
+				breakImage = !breakImage;
+				if (!isBreaker && speedActive == 0) {
+					breakImage = false;
+				}
+				timer.set("breakBlink");
+			}
+		}
+		
+
+		// Dashing
+		if (!superJumping && hasSuperJump) {
+			if (!KEY_DOWN || !onGround || !hasSuperJump) {
+				timer.set("superJump");
+			}
+			if (KEY_JUMP
+					&& (timer.expired("superJump") || (isBreaker && onGround))
+					&& !superJumping) {
+				superJumping = true;
+				dashes.clear();
+				timer.set("dashes", -350);
+				timer.set("superJump");
+			}
+		} else {
+			if (timer.expired("superJump", 220)) {
+				superJumping = false;
+				timer.set("superJump");
+			}
+		}
+
+		if (superJumping || speedActive > 1) {
+			if (timer.expired("dashes")) {
+				if (dashes.size() > 2) {
+					dashes.remove(0);
+				}
+				dashes.add(new int[] { posX, posY });
+				timer.set("dashes");
+			}
+		}
+	}
+	
+	
 	public boolean underTransparent() {
 		return map.transparentAt(posX, posY - 7);
 	}

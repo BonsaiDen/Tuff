@@ -116,7 +116,7 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 		return 0;
 	}
 
-	public boolean at(int x, int y, int width, int height) {
+	public boolean isIn(int x, int y, int width, int height) {
 		return in(x, y, width, height, posX + rightCol, posY)
 				|| in(x, y, width, height, posX + leftCol, posY)
 				|| in(x, y, width, height, posX + rightCol, posY - topColSize)
@@ -127,6 +127,26 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 		return px >= x && px <= x + width && py >= y && py <= y + height;
 	}
 
+	public boolean isOn(int x, int y, int width) {
+		return (posY == y && ((posX + rightCol >= x && posX + rightCol <= x + width)
+					|| (posX + leftCol >= x && posX + leftCol <= x + width)));
+	}
+	
+	public boolean onBlock() {
+		return map.colAt(posX + rightCol, posY, false) == 9 || map.colAt(posX + leftCol, posY, false) == 9;
+	}
+	
+	public boolean onGround() {
+		int cl = map.colAt(posX + rightCol, posY, false);
+		int cr = map.colAt(posX + leftCol, posY, false);
+		if (cl == 1 || cl == 3) {
+			return true;
+		} else if (cr == 1 || cr == 3) {
+			return true;
+		}
+		return false;
+	}
+	
 	// Gravity -----------------------------------------------------------------
 	protected void gravity() {
 		grav += addGrav;

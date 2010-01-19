@@ -99,12 +99,12 @@ public final class Tuff extends org.bonsai.dev.Game {
 			menu.add("Sound");
 			menu.addCheckItem("Sound", "Effects", "sound");
 			menu.addCheckItem("Sound", "Music", "music");
-			
+
 			// Game
 			player = new Player(this, 30, 40);
 			map = new TuffMap(this, !release);
 			player.setMap(map);
-			
+
 			// Sound
 			sound.addType("ogg", org.bonsai.dev.SoundObjectOgg.class);
 			// sound.addType("xm", org.bonsai.dev.SoundObjectXm.class);
@@ -180,38 +180,38 @@ public final class Tuff extends org.bonsai.dev.Game {
 			player.hasSuperJump = true;
 			player.hasBreak = true;
 			console.print("Gotta da power!");
-			
-		} else if(cmd.equals("fps")) {
+
+		} else if (cmd.equals("fps")) {
 			showFPS = !showFPS;
 			if (showFPS) {
 				console.print("What's your FPS?");
 			}
-			
+
 		} else if (cmd.equals("dry")) {
 			map.noWater = !map.noWater;
 			if (map.noWater) {
 				console.print("Summertime!");
 			}
-			
-		} else if(cmd.equals("waste")) {
+
+		} else if (cmd.equals("waste")) {
 			map.wasteLand = !map.wasteLand;
 			if (map.wasteLand) {
 				console.print("In a desert far away...");
 			}
-			
+
 		} else if (cmd.equals("sound")) {
 			map.showSound = !map.showSound;
 			if (map.showSound) {
 				console.print("Where does the noise come from?");
-			}	
-			
+			}
+
 		} else if (cmd.equals("nohide")) {
 			map.noHide = !map.noHide;
 			if (map.noHide) {
 				console.print("Where are you?");
 			}
-			
-		} else if(cmd.equals("edge")) {
+
+		} else if (cmd.equals("edge")) {
 			map.noBorders = !map.noBorders;
 			map.tileGen.reset();
 		}
@@ -341,7 +341,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 					toggleSound();
 				}
 			}
-			
+
 			// Screenshot
 			if (input.keyPressed(java.awt.event.KeyEvent.VK_PRINTSCREEN)) {
 				try {
@@ -351,7 +351,6 @@ public final class Tuff extends org.bonsai.dev.Game {
 					e.printStackTrace();
 				}
 			}
-			
 
 			// Control
 			if (textMessage == "") {
@@ -451,7 +450,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 	}
 
 	private void showFPS(Graphics2D g, int x, int y) {
-		font.draw(g, "FPS: " + Integer.toString(getFPS()) + "/" + Integer.toString(getMaxFPS()) +"\n" + "IMG: "
+		font.draw(g, "FPS: " + Integer.toString(getFPS()) + "/"
+				+ Integer.toString(getMaxFPS()) + "\n" + "IMG: "
 				+ Integer.toString(map.imgCount) + "/"
 				+ Integer.toString(map.objImgCount), x, y);
 	}
@@ -599,7 +599,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 			return input.keyDown(java.awt.event.KeyEvent.VK_SHIFT, true)
 					&& input.keyPressed(java.awt.event.KeyEvent.VK_F1, true);
 		} else {
-			if(input.keySequence(consoleKeys, true)) {
+			if (input.keySequence(consoleKeys, true)) {
 				consoleAcitvated = true;
 				return true;
 			}

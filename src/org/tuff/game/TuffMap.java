@@ -51,7 +51,7 @@ public class TuffMap extends GameObject<Tuff> {
 	public byte[][] soundData;
 	public byte[][] colData;
 	public byte[][] transparentData;
-	
+
 	// Lists
 	protected List<int[]> mapObjects = new ArrayList<int[]>();
 	private List<int[]> localMapObjects = new ArrayList<int[]>();
@@ -64,6 +64,8 @@ public class TuffMap extends GameObject<Tuff> {
 	private List<int[]> normalTileList = new ArrayList<int[]>();
 	private List<int[]> transparentTileList = new ArrayList<int[]>();
 	private Map<Integer, Long> breakedBlocks = new HashMap<Integer, Long>();
+	private Map<Integer, Integer> breakedBlocksStatus =
+			new HashMap<Integer, Integer>();
 
 	// Value
 	protected String[] powerModes =
@@ -456,12 +458,55 @@ public class TuffMap extends GameObject<Tuff> {
 					}
 				}
 			}
-
-			// Enemies
-			// for(PlayerObject e : enemies) {
-			// e.control();
-			// }
 		}
+
+		for (int[] p : localBlocks) {
+			if (p[4] == 255) {
+				Integer id = new Integer(p[1] * mapWidth + p[2]);
+				if (!breakedBlocks.containsKey(id)) {
+					if (player.isOn(p[1] * tileSize, p[2] * tileSize, 16)) {
+						if (!player.onGround()) {
+							breakedBlocks.put(id, getTime());
+							breakedBlocksStatus.put(id, 1);
+						}
+					}
+				} else {
+					long time = getTime() - breakedBlocks.get(id);
+					if (time > 75) {
+						p[5] = 1;
+					}
+					if (time > 2000) {
+						breakedBlocksStatus.put(id, 2);
+					}
+					if (!player.isIn(p[1] * tileSize, p[2] * tileSize, 16,
+							16)) {
+						if (time > 2500) {
+							breakedBlocks.remove(id);
+							breakedBlocksStatus.remove(id);
+							p[5] = 0;
+						}
+					}
+				}
+			}
+		}
+
+		// Integer id = new Integer(i[1] * mapWidth + i[2]);
+		// long time = 0;
+		// if (breakedBlocks.containsKey(id)) {
+		// time = getTime() - breakedBlocks.get(id);
+		// }
+		// if (time < 125 || time > 2500) {
+		// if (x >= i[1] * tileSize && x <= i[1] * tileSize + 16) {
+		// if (y >= i[2] * tileSize && y <= i[2] * tileSize + 16) {
+		// if (!breakedBlocks.containsKey(id) && player
+		// && y <= i[2] * tileSize) {
+		// breakedBlocks.put(id, getTime());
+		// }
+		// return 1;
+		// }
+		// }
+		// }
+
 	}
 
 	public void removeBlock(int[] p) {
@@ -643,23 +688,13 @@ public class TuffMap extends GameObject<Tuff> {
 
 		for (int[] i : localBlocks) {
 			if (i[4] == 255) {
-				Integer id = new Integer(i[1] * mapWidth + i[2]);
-				long time = 0;
-				if (breakedBlocks.containsKey(id)) {
-					time = getTime() - breakedBlocks.get(id);
-				}
-				if (time < 75 || time > 2500) {
+				if (i[5] == 0) {
 					if (x >= i[1] * tileSize && x <= i[1] * tileSize + 16) {
 						if (y >= i[2] * tileSize && y <= i[2] * tileSize + 16) {
-							if (!breakedBlocks.containsKey(id) && player
-									&& y <= i[2] * tileSize) {
-								breakedBlocks.put(id, getTime());
-							}
-							return 1;
+							return 9;
 						}
 					}
 				}
-
 			} else {
 				if (x >= i[1] * tileSize && x <= i[1] * tileSize + 32) {
 					if (y >= i[2] * tileSize && y <= i[2] * tileSize + 32) {
@@ -730,13 +765,13 @@ public class TuffMap extends GameObject<Tuff> {
 
 	// Items -------------------------------------------------------------------
 	public void addMapObject(int type, int x, int y, int subtype, int extra) {
-		mapObjects.add(new int[] { type, x, y, subtype, extra });
+		mapObjects.add(new int[] { type, x, y, subtype, extra, 0 });
 		updateLocal();
 	}
 
 	public void addMapObjectDirect(int type, int x, int y, int subtype,
 			int extra) {
-		mapObjects.add(new int[] { type, x, y, subtype, extra });
+		mapObjects.add(new int[] { type, x, y, subtype, extra, 0 });
 	}
 
 	public void removeObject(int obj) {
@@ -1071,24 +1106,18 @@ public class TuffMap extends GameObject<Tuff> {
 			int y = p[2] * tileSize - screenOffsetY;
 			if (isVisible(x, y, 32, 32)) {
 				if (p[4] == 255) {
-					int id = p[1] * mapWidth + p[2];
+					Integer id = p[1] * mapWidth + p[2];
 					int img = 0;
 					long time = 0;
 					if (breakedBlocks.containsKey(id)) {
 						time = getTime() - breakedBlocks.get(id);
 						img = (int) Math.min(6, time / 50);
-						if (time > 2000) {
+						if (breakedBlocksStatus.get(id) == 1) {
+							img = (int) Math.min(6, time / 50);
+						} else {
 							img = 6 - (int) Math.min(6, (time - 2000) / 50);
 							if (img < 0) {
 								img = 0;
-							}
-							if (!player.at(p[1] * tileSize, p[2] * tileSize,
-									16, 16)) {
-								if (time > 2500) {
-									breakedBlocks.remove(id);
-								}
-						//	} else {
-						//		breakedBlocks.put(id, getTime() - time);
 							}
 						}
 					}
