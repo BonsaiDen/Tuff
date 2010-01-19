@@ -48,7 +48,7 @@ public class MapRenderer {
 	}
 
 	public void render() {
-	//	long time = System.nanoTime();
+	//	long time = System.nanoTime(); // 45
 		GroupRenderer ground = new GroupRenderer(map);
 		ground.render();
 		
@@ -56,24 +56,27 @@ public class MapRenderer {
 		int[][] groupData = ground.groupData;
 	//	System.out.println((System.nanoTime() - time) / 1000000);
 
-	//	time = System.nanoTime();
+	//	time = System.nanoTime(); // 36
 		GroupSoundRenderer sound = new GroupSoundRenderer(map);
 		sound.render();
 		Map<Integer, Integer> groupSound = sound.groupInfo;
 		int[][] groupSoundData = sound.groupData;
 	//	System.out.println((System.nanoTime() - time) / 1000000);
 
-		for (int y = 0; y < map.mapHeight; y++) {
+		// 55
+	//	time = System.nanoTime();
+		for (int y = 0; y< map.mapHeight; y++) {
 			for (int x = 0; x < map.mapWidth; x++) {
-				map.drawData[x][y] = 0;
-				map.borderData[x][y] = 0;
-				setTypeData(x, y, false);
-				int g = groupGround.get(groupData[x][y]);
-				map.groundData[x][y] = (byte) g;
-				int s = groupSound.get(groupSoundData[x][y]);
-				map.soundData[x][y] = (byte) s;
+				map.drawData[y][x] = 0;
+				map.borderData[y][x] = 0;
+				setTypeData(y, x, false);
+				int g = groupGround.get(groupData[y][x]);
+				map.groundData[y][x] = (byte) g;
+				int s = groupSound.get(groupSoundData[y][x]);
+				map.soundData[y][x] = (byte) s;
 			}
 		}
+	//	System.out.println((System.nanoTime() - time) / 1000000);
 	}
 	
 	private void setTypeData(int x, int y, boolean transparent) {

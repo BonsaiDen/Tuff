@@ -643,7 +643,7 @@ public class TuffMap extends GameObject<Tuff> {
 
 		for (int[] i : localBlocks) {
 			if (i[4] == 255) {
-				int id = i[1] * mapWidth + i[2];
+				Integer id = new Integer(i[1] * mapWidth + i[2]);
 				long time = 0;
 				if (breakedBlocks.containsKey(id)) {
 					time = getTime() - breakedBlocks.get(id);

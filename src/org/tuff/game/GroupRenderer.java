@@ -41,12 +41,12 @@ public class GroupRenderer {
 		groupInfo.put(groupID, 0);
 		for (int y = 0; y < map.mapHeight; y++) {
 			for (int x = 0; x < map.mapWidth; x++) {
-				int type = map.mapData[x][y];
-				if (type > 0 && groupData[x][y] == 0) {
+				int type = map.mapData[y][x];
+				if (type > 0 && groupData[y][x] == 0) {
 					hasBorder = false;
 					groupID += 1;
 					groupInfo.put(groupID,
-							checkSize(group(x, y, groupID, type), hasBorder, type));
+							checkSize(group(y, x, groupID, type), hasBorder, type));
 				}
 			}
 		}

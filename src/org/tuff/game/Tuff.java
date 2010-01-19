@@ -59,9 +59,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 		consoleKeys.add(java.awt.event.KeyEvent.VK_RIGHT);
 		consoleKeys.add(java.awt.event.KeyEvent.VK_LEFT);
 		consoleKeys.add(java.awt.event.KeyEvent.VK_RIGHT);
-		consoleKeys.add(java.awt.event.KeyEvent.VK_A);
 		consoleKeys.add(java.awt.event.KeyEvent.VK_B);
-		consoleKeys.add(java.awt.event.KeyEvent.VK_ENTER);
+		consoleKeys.add(java.awt.event.KeyEvent.VK_A);
 	}
 	private boolean consoleAcitvated = false;
 	private boolean showFPS = false;

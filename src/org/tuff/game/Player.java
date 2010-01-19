@@ -373,7 +373,13 @@ public class Player extends PlayerObject {
 			}
 			// Sounds
 			if (posX != oldX) {
-				if (onGround && timer.expired("walk")) {
+				int soundSpeed = 170;
+				if (speedActive == 1) {
+					soundSpeed = 150;
+				} else if (speedActive == 2) {
+					soundSpeed = 75;
+				}
+				if (onGround && timer.expired("walk", soundSpeed)) {
 					game.playSound("walk", true);
 					timer.set("walk");
 				}
