@@ -70,7 +70,7 @@ public class TuffMap extends GameObject<Tuff> {
 	// Value
 	protected String[] powerModes =
 			new String[] { "J", "W", "U", "D", "B", "S" };
-	protected int rainbowCount = 0;
+	protected int shardCount = 0;
 	private Color blockColor = new Color(152, 152, 152);
 
 	// Images
@@ -81,7 +81,7 @@ public class TuffMap extends GameObject<Tuff> {
 	private BufferedImage[] saveTiles;
 	private BufferedImage[] warpTiles;
 	private BufferedImage[] switchTiles;
-	protected BufferedImage[] rainbowTiles;
+	protected BufferedImage[] shardTiles;
 	private BufferedImage blockTile;
 	private BufferedImage[] blockTiles;
 
@@ -159,7 +159,7 @@ public class TuffMap extends GameObject<Tuff> {
 		waterTiles = image.gets("/images/water.png", 3, 2);
 		saveTiles = image.gets("/images/save.png", 3, 1);
 		warpTiles = image.gets("/images/warps.png", 3, 2);
-		rainbowTiles = image.gets("/images/rainbow.png", 7, 1);
+		shardTiles = image.gets("/images/shard.png", 7, 1);
 		blockTile = image.get("/images/block.png");
 		switchTiles = image.gets("/images/switch.png", 2, 4);
 		blockTiles = image.gets("/images/blocks.png", 7, 1);
@@ -171,7 +171,7 @@ public class TuffMap extends GameObject<Tuff> {
 		animation.add("water", new int[] { 0, 1, 2, 1 }, 125, true);
 		animation.add("save", new int[] { 0, 1, 2, 1 }, 75, true);
 		animation.add("warp", new int[] { 0, 1, 2, 1 }, 75, true);
-		animation.add("rainbow", new int[] { 0, 0, 1, 2, 1, 0, 0, 3, 4, 3, 0,
+		animation.add("shard", new int[] { 0, 0, 1, 2, 1, 0, 0, 3, 4, 3, 0,
 				0, 5, 6, 5 }, 125, true);
 
 		// Init
@@ -368,9 +368,9 @@ public class TuffMap extends GameObject<Tuff> {
 			// Map Objects
 			boolean warped = false;
 			for (int i = 0; i < localMapObjects.size(); i++) {
-				int[] p = localMapObjects.get(i);
-				int x = p[1] * tileSize;
-				int y = p[2] * tileSize;
+				final int[] p = localMapObjects.get(i);
+				final int x = p[1] * tileSize;
+				final int y = p[2] * tileSize;
 
 				// PowerUPS
 				if (p[3] == 0) {
@@ -432,8 +432,8 @@ public class TuffMap extends GameObject<Tuff> {
 					// Blocks
 				} else if (p[3] == 5 && p[4] > 3
 						&& p[4] <= player.entitiesCollected.size()) {
-					int dx = Math.abs((x + 16) - player.posX);
-					int dy = Math.abs((y + 16) - (player.posY - 7));
+					final int dx = Math.abs((x + 16) - player.posX);
+					final int dy = Math.abs((y + 16) - (player.posY - 7));
 					if (Math.sqrt(dx * dx + dy * dy) < 32) {
 						player.blocksOpened.add(new int[] { p[1], p[2] });
 						removeBlock(p);
@@ -447,7 +447,7 @@ public class TuffMap extends GameObject<Tuff> {
 							p[4] = 1;
 							game.flashSwitch();
 							for (int e = 0; e < localMapObjects.size(); e++) {
-								int[] c = localMapObjects.get(e);
+								final int[] c = localMapObjects.get(e);
 								if (c[0] == 0 && c[3] == 5
 										&& (c[4] == (p[3] - 6))) {
 									removeBlock(c);
@@ -460,9 +460,10 @@ public class TuffMap extends GameObject<Tuff> {
 			}
 		}
 
-		for (int[] p : localBlocks) {
+		for (int e = 0; e < localBlocks.size(); e++) {
+			final int p[] = localBlocks.get(e);
 			if (p[4] == 255) {
-				Integer id = new Integer(p[1] * mapWidth + p[2]);
+				final Integer id = new Integer(p[1] * mapWidth + p[2]);
 				if (!breakedBlocks.containsKey(id)) {
 					if (player.isOn(p[1] * tileSize, p[2] * tileSize, 16)) {
 						if (!player.onGround()) {
@@ -471,15 +472,14 @@ public class TuffMap extends GameObject<Tuff> {
 						}
 					}
 				} else {
-					long time = getTime() - breakedBlocks.get(id);
+					final long time = getTime() - breakedBlocks.get(id);
 					if (time > 75) {
 						p[5] = 1;
 					}
 					if (time > 2000) {
 						breakedBlocksStatus.put(id, 2);
 					}
-					if (!player.isIn(p[1] * tileSize, p[2] * tileSize, 16,
-							16)) {
+					if (!player.isIn(p[1] * tileSize, p[2] * tileSize, 16, 16)) {
 						if (time > 2500) {
 							breakedBlocks.remove(id);
 							breakedBlocksStatus.remove(id);
@@ -489,24 +489,6 @@ public class TuffMap extends GameObject<Tuff> {
 				}
 			}
 		}
-
-		// Integer id = new Integer(i[1] * mapWidth + i[2]);
-		// long time = 0;
-		// if (breakedBlocks.containsKey(id)) {
-		// time = getTime() - breakedBlocks.get(id);
-		// }
-		// if (time < 125 || time > 2500) {
-		// if (x >= i[1] * tileSize && x <= i[1] * tileSize + 16) {
-		// if (y >= i[2] * tileSize && y <= i[2] * tileSize + 16) {
-		// if (!breakedBlocks.containsKey(id) && player
-		// && y <= i[2] * tileSize) {
-		// breakedBlocks.put(id, getTime());
-		// }
-		// return 1;
-		// }
-		// }
-		// }
-
 	}
 
 	public void removeBlock(int[] p) {
@@ -669,15 +651,16 @@ public class TuffMap extends GameObject<Tuff> {
 
 	// Collision ---------------------------------------------------------------
 	public int colAt(final int x, final int y, final boolean player) {
-		int tx = x / tileSize;
-		int ty = y / tileSize;
+		final int tx = x / tileSize;
+		final int ty = y / tileSize;
 		if (x < 0 || tx < 0 || tx > mapWidth - 1 || y < 0 || ty < 0
 				|| ty > mapHeight - 1) {
 
 			return 10;
 		}
 
-		for (int[] i : localSwitches) {
+		for (int e = 0; e < localSwitches.size(); e++) {
+			final int i[] = localSwitches.get(e);
 			if (x >= i[1] * tileSize + 2 && x <= i[1] * tileSize + 14) {
 				if (y >= i[2] * tileSize + 6 + (i[4] == 1 ? 6 : 0)
 						&& y <= i[2] * tileSize + 16) {
@@ -686,7 +669,8 @@ public class TuffMap extends GameObject<Tuff> {
 			}
 		}
 
-		for (int[] i : localBlocks) {
+		for (int e = 0; e < localBlocks.size(); e++) {
+			final int i[] = localBlocks.get(e);
 			if (i[4] == 255) {
 				if (i[5] == 0) {
 					if (x >= i[1] * tileSize && x <= i[1] * tileSize + 16) {
@@ -786,84 +770,90 @@ public class TuffMap extends GameObject<Tuff> {
 		localSwitches.clear();
 		localBlocks.clear();
 
-		int width = screenWidth / 2;
-		int height = screenHeight / 2;
-		int sectorStartX = sectorX * width;
-		int sectorStartY = sectorY * height;
+		final int width = screenWidth / 2;
+		final int height = screenHeight / 2;
+		final int sectorStartX = sectorX * width;
+		final int sectorStartY = sectorY * height;
 
 		objects: for (int[] object : mapObjects) {
-			if (object[0] == 1) {
-				if (object[1] >= sectorStartX - width
-						&& object[2] >= sectorStartY - height
-						&& object[1] < sectorStartX + screenWidth + width + 1
-						&& object[2] < sectorStartY + screenHeight + height + 1) {
+			if (object[1] >= sectorStartX - width
+					&& object[2] >= sectorStartY - height
+					&& object[1] < sectorStartX + screenWidth + width + 1
+					&& object[2] < sectorStartY + screenHeight + height + 1) {
 
+				if (object[0] == 1) {
 					localTrees.add(object);
-				}
 
-			} else {
-				if (object[3] == 2 && game.player.hasControl) {
-					for (int[] p : game.player.entitiesCollected) {
-						if (p[0] == object[1] && p[1] == object[2]) {
-							continue objects;
-						}
-					}
-				}
-
-				// Blocks
-				if (object[3] == 5 && game.player.hasControl) {
-					if (object[4] > 3) {
-						for (int[] p : game.player.blocksOpened) {
+				} else {
+					if (object[3] == 2 && game.player.hasControl) {
+						for (int[] p : game.player.entitiesCollected) {
 							if (p[0] == object[1] && p[1] == object[2]) {
 								continue objects;
 							}
 						}
+					}
+
+					// Blocks
+					if (object[3] == 5 && game.player.hasControl) {
+						if (object[4] > 3) {
+							for (int[] p : game.player.blocksOpened) {
+								if (p[0] == object[1] && p[1] == object[2]) {
+									continue objects;
+								}
+							}
+							localBlocks.add(object);
+
+						} else if (object[4] == 0
+								&& game.player.switchesToggled[0]) {
+							continue objects;
+
+						} else if (object[4] == 1
+								&& game.player.switchesToggled[1]) {
+							continue objects;
+
+						} else if (object[4] == 2
+								&& game.player.switchesToggled[2]) {
+							continue objects;
+
+						} else if (object[4] == 3
+								&& game.player.switchesToggled[3]) {
+							continue objects;
+						}
 						localBlocks.add(object);
 
-					} else if (object[4] == 0 && game.player.switchesToggled[0]) {
-						continue objects;
-
-					} else if (object[4] == 1 && game.player.switchesToggled[1]) {
-						continue objects;
-
-					} else if (object[4] == 2 && game.player.switchesToggled[2]) {
-						continue objects;
-
-					} else if (object[4] == 3 && game.player.switchesToggled[3]) {
-						continue objects;
+					} else if (object[3] == 5) {
+						localBlocks.add(object);
 					}
-					localBlocks.add(object);
 
-				} else if (object[3] == 5) {
-					localBlocks.add(object);
-				}
-
-				if (object[3] >= 6) {
-					if (game.player.hasControl) {
-						if (game.player.switchesToggled[object[3] - 6]) {
-							object[4] = 1;
+					if (object[3] >= 6) {
+						if (game.player.hasControl) {
+							if (game.player.switchesToggled[object[3] - 6]) {
+								object[4] = 1;
+							}
+						} else {
+							object[4] = 0;
 						}
-					} else {
-						object[4] = 0;
 					}
-				}
 
-				if (object[3] >= 6) {
-					localSwitches.add(object);
-				}
+					if (object[3] >= 6) {
+						localSwitches.add(object);
+					}
 
-				if (object[1] >= sectorStartX - width
-						&& object[2] >= sectorStartY - height
-						&& object[1] < sectorStartX + screenWidth + width + 1
-						&& object[2] < sectorStartY + screenHeight + height + 1) {
+					if (object[1] >= sectorStartX - width
+							&& object[2] >= sectorStartY - height
+							&& object[1] < sectorStartX + screenWidth + width
+									+ 1
+							&& object[2] < sectorStartY + screenHeight + height
+									+ 1) {
 
-					// if (object[3] != 5) {
-					// colData[object[1]][object[2]] = 2;
-					// colData[object[1] + 1][object[2]] = 2;
-					// colData[object[1]][object[2] + 1] = 2;
-					// colData[object[1] + 1][object[2] + 1] = 2;
-					localMapObjects.add(object);
-					// }
+						// if (object[3] != 5) {
+						// colData[object[1]][object[2]] = 2;
+						// colData[object[1] + 1][object[2]] = 2;
+						// colData[object[1]][object[2] + 1] = 2;
+						// colData[object[1] + 1][object[2] + 1] = 2;
+						localMapObjects.add(object);
+						// }
+					}
 				}
 			}
 		}
@@ -902,8 +892,8 @@ public class TuffMap extends GameObject<Tuff> {
 				for (int x = mapOffsetX; x < mapOffsetX + screenWidth
 						+ (scrollOffsetX != 0 ? 1 : 0); x++) {
 					if (x < mapWidth) {
-						int type = mapData[x][y];
-						int tile = drawData[x][y];
+						final int type = mapData[x][y];
+						final int tile = drawData[x][y];
 						if (tile > 0) {
 							if (colData[x][y] == 1) {
 								drawTile(g, transparentTile, tile, x, y,
@@ -920,19 +910,19 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Draw Trees
 		if (!wasteLand) {
-			for (int[] tree : localTrees) {
-				int ground = getAtTree(tree[1], tree[2]);
-				int add = ground == 4 ? 1 : (ground == 2 ? 2 : 0);
-
-				int x = tree[1] * tileSize - screenOffsetX;
+			for (int e = 0; e < localTrees.size(); e++) {
+				final int tree[] = localTrees.get(e);
+				final int ground = getAtTree(tree[1], tree[2]);
+				final int add = ground == 4 ? 1 : (ground == 2 ? 2 : 0);
+				final int x = tree[1] * tileSize - screenOffsetX;
 				if (tree[3] <= 3) {
-					int y = (tree[2] - 1) * tileSize - screenOffsetY;
+					final int y = (tree[2] - 1) * tileSize - screenOffsetY;
 					if (isVisible(x, y, 32, 32)) {
 						g.drawImage(treeTiles[tree[3] + add * 4], x, y, null);
 						objImgCount++;
 					}
 				} else {
-					int y = tree[2] * tileSize - screenOffsetY;
+					final int y = tree[2] * tileSize - screenOffsetY;
 					if (isVisible(x, y, 16, 16)) {
 						g.drawImage(leafTiles[tree[3] - 4 + add * 5], x, y,
 								null);
@@ -983,8 +973,7 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Water
 		if (type == 4) {
-			final int add = x % 2 == 1 && y % 2 == 1 ? 3 : 0;
-			waterTileList.add(new int[] { px, py, add });
+			waterTileList.add(new int[] { px, py, (x % 2 == 1 && y % 2 == 1 ? 3 : 0) });
 		}
 
 		// Transparency Overlay
@@ -1013,7 +1002,7 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Show sound
 		if (showSound) {
-			int snd = getSoundAt(x, y);
+			final int snd = getSoundAt(x, y);
 			if (snd != -1) {
 				g.setColor(colors[snd + 1]);
 				g.fillRect(px + 6, py + 6, 4, 4);
@@ -1027,19 +1016,21 @@ public class TuffMap extends GameObject<Tuff> {
 		}
 
 		// Map Objects
-		for (int[] p : localMapObjects) {
+		for (int e = 0; e < localMapObjects.size(); e++) {
+			final int p[] = localMapObjects.get(e);
+
 			// PowerUPS
 			if (p[3] == 0) {
-				int x = (p[1] * tileSize - screenOffsetX) + 3;
-				int y = (p[2] * tileSize - screenOffsetY) + 3;
+				final int x = (p[1] * tileSize - screenOffsetX) + 3;
+				final int y = (p[2] * tileSize - screenOffsetY) + 3;
 				if (isVisible(x, y, 9, 11)
 						&& (!player.hasAbility(powerModes[p[4]]) || !player.hasControl)) {
 					font.draw(g, powerModes[p[4]], x, y);
 				}
 				// Save Points
 			} else if (p[3] == 1) {
-				int x = (p[1] * tileSize - screenOffsetX);
-				int y =
+				final int x = (p[1] * tileSize - screenOffsetX);
+				final int y =
 						(p[2] * tileSize - screenOffsetY) + 10
 								- (int) saveScale;
 				if (isVisible(x, y, 16, 6 + (int) saveScale)) {
@@ -1050,8 +1041,8 @@ public class TuffMap extends GameObject<Tuff> {
 
 				// Warps
 			} else if (p[3] == 3 || p[3] == 4) {
-				int x = (p[1] * tileSize - screenOffsetX);
-				int y =
+				final int x = (p[1] * tileSize - screenOffsetX);
+				final int y =
 						(p[2] * tileSize - screenOffsetY) + 10
 								- (p[3] == 4 ? (int) warpScale + 6 : 0);
 				if (isVisible(x, y, 16, 6 + (p[3] == 4 ? (int) warpScale + 6
@@ -1064,17 +1055,17 @@ public class TuffMap extends GameObject<Tuff> {
 
 				// Entity
 			} else if (p[3] == 2) {
-				int x = p[1] * tileSize - screenOffsetX;
-				int y = p[2] * tileSize - screenOffsetY;
+				final int x = p[1] * tileSize - screenOffsetX;
+				final int y = p[2] * tileSize - screenOffsetY;
 				if (isVisible(x, y, 16, 16)) {
-					g.drawImage(rainbowTiles[animation.get("rainbow")], x, y,
+					g.drawImage(shardTiles[animation.get("shard")], x, y,
 							null);
 					objImgCount++;
 				}
 
 			} else if (p[3] >= 6) {
-				int x = p[1] * tileSize - screenOffsetX;
-				int y = p[2] * tileSize - screenOffsetY;
+				final int x = p[1] * tileSize - screenOffsetX;
+				final int y = p[2] * tileSize - screenOffsetY;
 				if (isVisible(x, y, 32, 32)) {
 					g.drawImage(switchTiles[0 + (p[4] == 1 ? 1 : 0)
 							+ (p[3] - 6) * 2], x, y, null);
@@ -1086,13 +1077,15 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Water
 		if (!noWater) {
-			for (int[] tile : waterTileList) {
+			for (int e = 0; e < waterTileList.size(); e++) {
+				final int tile[] = waterTileList.get(e);
 				g.drawImage(waterTiles[animation.get("water") + tile[2]],
 						tile[0], tile[1], null);
 				imgCount++;
 			}
 			waterTileList.clear();
-			for (int[] tile : waterBorderList) {
+			for (int e = 0; e < waterBorderList.size(); e++) {
+				final int tile[] = waterBorderList.get(e);
 				g.drawImage(borderTiles[1 + (4 - 1) * 16], tile[0], tile[1],
 						null);
 				imgCount++;
@@ -1101,17 +1094,16 @@ public class TuffMap extends GameObject<Tuff> {
 		waterBorderList.clear();
 
 		// Blocks
-		for (int[] p : localBlocks) {
-			int x = p[1] * tileSize - screenOffsetX;
-			int y = p[2] * tileSize - screenOffsetY;
+		for (int e = 0; e < localBlocks.size(); e++) {
+			final int p[] = localBlocks.get(e);
+			final int x = p[1] * tileSize - screenOffsetX;
+			final int y = p[2] * tileSize - screenOffsetY;
 			if (isVisible(x, y, 32, 32)) {
 				if (p[4] == 255) {
-					Integer id = p[1] * mapWidth + p[2];
-					int img = 0;
-					long time = 0;
+					final Integer id = p[1] * mapWidth + p[2];
 					if (breakedBlocks.containsKey(id)) {
-						time = getTime() - breakedBlocks.get(id);
-						img = (int) Math.min(6, time / 50);
+						long time = getTime() - breakedBlocks.get(id);
+						int img = (int) Math.min(6, time / 50);
 						if (breakedBlocksStatus.get(id) == 1) {
 							img = (int) Math.min(6, time / 50);
 						} else {
@@ -1120,8 +1112,10 @@ public class TuffMap extends GameObject<Tuff> {
 								img = 0;
 							}
 						}
+						g.drawImage(blockTiles[img], x, y, null);
+					} else {
+						g.drawImage(blockTiles[0], x, y, null);
 					}
-					g.drawImage(blockTiles[img], x, y, null);
 
 				} else {
 					g.drawImage(blockTile, x, y, null);
@@ -1135,7 +1129,7 @@ public class TuffMap extends GameObject<Tuff> {
 					} else if (p[4] == 3) {
 						str = "D";
 					}
-					int w = font.width(str) / 2;
+					final int w = font.width(str) / 2;
 					font.draw(g, str, (x + 16) - w, y + 11);
 				}
 				objImgCount++;
@@ -1145,7 +1139,8 @@ public class TuffMap extends GameObject<Tuff> {
 		// Transparent Overlay
 		Composite tmp = g.getComposite();
 		if (!noHide) {
-			for (int[] t : normalTileList) {
+			for (int e = 0; e < normalTileList.size(); e++) {
+				final int t[] = normalTileList.get(e);
 				g.setComposite(AlphaComposite.getInstance(
 						AlphaComposite.SRC_OVER,
 						transparentData[t[2]][t[3]] == 1 ? tileTransparency
@@ -1157,16 +1152,17 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Break Effects
 		for (int i = 0; i < breakEffects.size(); i++) {
-			int[] effect = breakEffects.get(i);
-
-			float d =
+			final int[] effect = breakEffects.get(i);
+			final float d =
 					(float) (100.0 / 500.0 * (game.getTime() - effect[0])) / 100;
 			if (d > 1.0) {
 				breakEffects.remove(i);
 			} else if (d < 1.0 && d > 0.0) {
-				int type = effect[3];
-				int x = effect[1] * tileSize - screenOffsetX - (type - 1) * 24;
-				int y = effect[2] * tileSize - screenOffsetY - (type - 1) * 24;
+				final int type = effect[3];
+				final int x =
+						effect[1] * tileSize - screenOffsetX - (type - 1) * 24;
+				final int y =
+						effect[2] * tileSize - screenOffsetY - (type - 1) * 24;
 				int size = (int) (20 + 24 * d) * type;
 
 				g.setColor(type == 1 ? Color.GRAY : blockColor);
@@ -1308,7 +1304,7 @@ public class TuffMap extends GameObject<Tuff> {
 			if (!game.readString(in, 3).equals("OBJ")) {
 				return false;
 			}
-			rainbowCount = 0;
+			shardCount = 0;
 			int objectCount = in.readInt();
 			mapObjects = new ArrayList<int[]>(objectCount);
 			for (int i = 0; i < objectCount; i++) {
@@ -1328,7 +1324,7 @@ public class TuffMap extends GameObject<Tuff> {
 
 					} else if (type == 2) {
 						addMapObjectDirect(0, x, y, 2, 0);
-						rainbowCount++;
+						shardCount++;
 
 					} else if (type == 3) {
 						addMapObjectDirect(0, x, y, 3, 0);

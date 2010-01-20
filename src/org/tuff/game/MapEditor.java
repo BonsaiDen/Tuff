@@ -959,10 +959,10 @@ public class MapEditor extends GameObject<Tuff> {
 		}
 		if (remove != -1) {
 			map.removeObject(remove);
-			map.rainbowCount -= 1;
+			map.shardCount -= 1;
 		} else {
 			map.addMapObject(0, x, y, 2, 0);
-			map.rainbowCount += 1;
+			map.shardCount += 1;
 		}
 	}
 

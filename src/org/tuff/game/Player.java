@@ -161,8 +161,7 @@ public class Player extends PlayerObject {
 			controlWater();
 			controlMovement();
 			controlJump();
-			
-			
+
 			// Gravity
 			if (moveWall) {
 				maxGrav = 1.25f;
@@ -206,7 +205,7 @@ public class Player extends PlayerObject {
 		}
 		animate();
 	}
-	
+
 	public void controlMovement() {
 		// Down Stuff
 		if (KEY_DOWN) {
@@ -223,11 +222,20 @@ public class Player extends PlayerObject {
 
 		// Movement
 		if (speedActive == 1) {
+			moveX = side == 0 ? -0.5f : 0.5f;
 			speed = 4;
+
 		} else if (speedActive == 2) {
-			speed = 8;
+			moveX = side == 0 ? -0.5f : 0.5f;
+			speed = 5;
+
+		} else if (speedActive == 3) {
+			moveX = side == 0 ? -0.5f : 0.5f;
+			speed = 7;
+
 		} else if (inWater) {
 			speed = 2;
+
 		} else {
 			speed = 3;
 		}
@@ -281,6 +289,8 @@ public class Player extends PlayerObject {
 			if (speedActive == 1) {
 				soundSpeed = 150;
 			} else if (speedActive == 2) {
+				soundSpeed = 115;
+			} else if (speedActive == 3) {
 				soundSpeed = 75;
 			}
 			if (onGround && timer.expired("walk", soundSpeed)) {
@@ -294,7 +304,7 @@ public class Player extends PlayerObject {
 		}
 
 	}
-	
+
 	public void controlJump() {
 		// Bewteen 2 walls
 		boolean doubleWall = false;
@@ -314,7 +324,7 @@ public class Player extends PlayerObject {
 		} else {
 			moveWall = false;
 		}
-		
+
 		// Jumping height
 		if (hasHighJump) {
 			jumpGrav = -7.9f;
@@ -426,7 +436,6 @@ public class Player extends PlayerObject {
 			grav = grav / 2;
 		}
 
-
 		if (inWater && !onGround && hasDive) {
 			if (input.keyPressed(java.awt.event.KeyEvent.VK_S)) {
 				timer.set("dive");
@@ -435,7 +444,7 @@ public class Player extends PlayerObject {
 			}
 		}
 	}
-	
+
 	public void controlSpeedBreakJump() {
 		// Init Speed
 		if (hasSpeed) {
@@ -447,15 +456,23 @@ public class Player extends PlayerObject {
 				} else if (speedPos - posX < -48 && speedActive == 0) {
 					speedActive = 1;
 					speedSide = 1;
-					
-				} else if (speedPos - posX > 112 && speedActive == 1) {
+
+				} else if (speedPos - posX > 80 && speedActive == 1) {
 					speedActive = 2;
+					speedSide = 0;
+
+				} else if (speedPos - posX < -80 && speedActive == 1) {
+					speedActive = 2;
+					speedSide = 1;
+
+				} else if (speedPos - posX > 112 && speedActive == 2) {
+					speedActive = 3;
 					speedSide = 0;
 					dashes.clear();
 					timer.set("dashes", -350);
 
-				} else if (speedPos - posX < -112 && speedActive == 1) {
-					speedActive = 2;
+				} else if (speedPos - posX < -112 && speedActive == 2) {
+					speedActive = 3;
 					speedSide = 1;
 					dashes.clear();
 					timer.set("dashes", -350);
@@ -494,7 +511,7 @@ public class Player extends PlayerObject {
 			}
 		}
 
-		if (isBreaker || speedActive > 1) {
+		if (isBreaker || speedActive > 2) {
 			if (timer.expired("breakBlink")) {
 				breakImage = !breakImage;
 				if (!isBreaker && speedActive == 0) {
@@ -503,7 +520,6 @@ public class Player extends PlayerObject {
 				timer.set("breakBlink");
 			}
 		}
-		
 
 		// Dashing
 		if (!superJumping && hasSuperJump) {
@@ -525,7 +541,7 @@ public class Player extends PlayerObject {
 			}
 		}
 
-		if (superJumping || speedActive > 1) {
+		if (superJumping || speedActive > 2) {
 			if (timer.expired("dashes")) {
 				if (dashes.size() > 2) {
 					dashes.remove(0);
@@ -535,8 +551,7 @@ public class Player extends PlayerObject {
 			}
 		}
 	}
-	
-	
+
 	public boolean underTransparent() {
 		return map.transparentAt(posX, posY - 7);
 	}
@@ -777,7 +792,7 @@ public class Player extends PlayerObject {
 			// Walking
 		} else if (oldX != posX && onGround) {
 			playerImage =
-					speedActive > 1 ? animation.get("speed")
+					speedActive > 2 ? animation.get("speed")
 							: animation.get("walk");
 
 			// Swimming
@@ -831,7 +846,7 @@ public class Player extends PlayerObject {
 		}
 
 		// Dash
-		if (superJumping || speedActive > 1) {
+		if (superJumping || speedActive > 2) {
 			Composite tmp = g.getComposite();
 			AlphaComposite alphaComposite = null;
 

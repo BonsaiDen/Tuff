@@ -401,7 +401,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 				font.draw(g, can, 2, 48);
 
 			} else {
-				showRainbows(g, 2, 2);
+				showShards(g, 2, 2);
 				if (showFPS) {
 					showFPS(g, 2, 16);
 				}
@@ -443,11 +443,11 @@ public final class Tuff extends org.bonsai.dev.Game {
 		}
 	}
 
-	private void showRainbows(Graphics2D g, int x, int y) {
-		g.drawImage(map.rainbowTiles[animation.get("rainbow")], x - 2, y - 4,
+	private void showShards(Graphics2D g, int x, int y) {
+		g.drawImage(map.shardTiles[animation.get("shard")], x - 2, y - 4,
 				null);
 		font.draw(g, "x" + Integer.toString(player.entitiesCollected.size())
-				+ "/" + Integer.toString(map.rainbowCount), x + 12, y);
+				+ "/" + Integer.toString(map.shardCount), x + 12, y);
 	}
 
 	private void showFPS(Graphics2D g, int x, int y) {
