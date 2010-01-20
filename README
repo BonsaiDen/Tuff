@@ -1,9 +1,14 @@
 Tuff
 ====
 
-A small 2D Game in Black & White.
+A small 2D Game in Black & White. Featuring old school GameBoy resolution and 
+Metroid style world exploration and PowerUps.
 
-Tuff depends on the BonsaiGameLibrary(http://github.com/BonsaiLeaf/Bonsai-Game-Library) for the engine and JOrbis(http://www.jcraft.com/jorbis/) for OGG support.
+Tuff depends on the BonsaiGameLibrary for the engine and JOrbis for OGG 
+support.
+
+BonsaiGameLibrary: http://github.com/BonsaiLeaf/Bonsai-Game-Library
+JOrbis: http://www.jcraft.com/jorbis/
 
 Copyright (C) 2009-2010 Ivo Wetzel
 <http://github.com/BonsaiLeaf/Tuff>

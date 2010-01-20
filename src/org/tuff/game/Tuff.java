@@ -80,7 +80,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 	private BufferedImage loadingImage;
 
 	// Stuff
-	protected static boolean release = false;
+	protected static boolean release = true;
 
 	// Sound
 	private boolean musicActive = true;
@@ -178,6 +178,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 			player.hasWallJump = true;
 			player.hasDive = true;
 			player.hasSuperJump = true;
+			player.hasSpeed = true;
 			player.hasBreak = true;
 			console.print("Gotta da power!");
 
