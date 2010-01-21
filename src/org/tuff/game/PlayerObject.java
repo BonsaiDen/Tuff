@@ -128,14 +128,15 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 	}
 
 	public boolean isOn(int x, int y, int width) {
-		return (posY == y && ((posX + rightCol >= x && posX + rightCol <= x + width)
-					|| (posX + leftCol >= x && posX + leftCol <= x + width)));
+		return (posY == y && ((posX + rightCol >= x && posX + rightCol <= x
+				+ width) || (posX + leftCol >= x && posX + leftCol <= x + width)));
 	}
-	
+
 	public boolean onBlock() {
-		return map.colAt(posX + rightCol, posY, false) == 9 || map.colAt(posX + leftCol, posY, false) == 9;
+		return map.colAt(posX + rightCol, posY, false) == 9
+				|| map.colAt(posX + leftCol, posY, false) == 9;
 	}
-	
+
 	public boolean onGround() {
 		int cl = map.colAt(posX + rightCol, posY, false);
 		int cr = map.colAt(posX + leftCol, posY, false);
@@ -146,7 +147,7 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 		}
 		return false;
 	}
-	
+
 	// Gravity -----------------------------------------------------------------
 	protected void gravity() {
 		grav += addGrav;

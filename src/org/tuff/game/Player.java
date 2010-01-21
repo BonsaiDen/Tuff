@@ -76,9 +76,8 @@ public class Player extends PlayerObject {
 	public boolean hasDive = false;
 	public boolean hasBreak = false;
 	public boolean hasSpeed = false;
-	public String[] powerMessages =
-			new String[] { "HIGHJUMP", "WALLJUMP", "SUPERJUMP", "DIVE",
-					"BREAK", "SPEED" };
+	public String[] powerMessages = new String[] { "HIGHJUMP", "WALLJUMP",
+			"SUPERJUMP", "DIVE", "BREAK", "SPEED" };
 
 	// Entities
 	public ArrayList<int[]> entitiesCollected = new ArrayList<int[]>();
@@ -144,17 +143,14 @@ public class Player extends PlayerObject {
 
 			// Movements
 			KEY_JUMP = input.keyPressed(java.awt.event.KeyEvent.VK_SPACE);
-			KEY_LEFT =
-					input.keyDown(java.awt.event.KeyEvent.VK_A)
-							|| input.keyDown(java.awt.event.KeyEvent.VK_LEFT);
+			KEY_LEFT = input.keyDown(java.awt.event.KeyEvent.VK_A)
+					|| input.keyDown(java.awt.event.KeyEvent.VK_LEFT);
 
-			KEY_RIGHT =
-					input.keyDown(java.awt.event.KeyEvent.VK_D)
-							|| input.keyDown(java.awt.event.KeyEvent.VK_RIGHT);
+			KEY_RIGHT = input.keyDown(java.awt.event.KeyEvent.VK_D)
+					|| input.keyDown(java.awt.event.KeyEvent.VK_RIGHT);
 
-			KEY_DOWN =
-					input.keyDown(java.awt.event.KeyEvent.VK_S)
-							|| input.keyDown(java.awt.event.KeyEvent.VK_DOWN);
+			KEY_DOWN = input.keyDown(java.awt.event.KeyEvent.VK_S)
+					|| input.keyDown(java.awt.event.KeyEvent.VK_DOWN);
 
 			// Stuff
 			controlSpeedBreakJump();
@@ -314,9 +310,8 @@ public class Player extends PlayerObject {
 				moveWallX = posX;
 				moveWallY = posY;
 			}
-			doubleWall =
-					map.hasColAt(posX + 11, posY - 7)
-							&& map.hasColAt(posX - 12, posY - 7);
+			doubleWall = map.hasColAt(posX + 11, posY - 7)
+					&& map.hasColAt(posX - 12, posY - 7);
 
 			if (timer.expired("moveWall") || doubleWall) {
 				moveWall = false;
@@ -636,15 +631,13 @@ public class Player extends PlayerObject {
 			wallRight = false;
 
 		} else {
-			wallLeft =
-					map.hasColAt(posX - 6, posY - 8)
-							&& map.hasColAt(posX - 6, posY + 9)
-							&& !map.hasColAt(posX + 11, posY - 7);
+			wallLeft = map.hasColAt(posX - 6, posY - 8)
+					&& map.hasColAt(posX - 6, posY + 9)
+					&& !map.hasColAt(posX + 11, posY - 7);
 
-			wallRight =
-					map.hasColAt(posX + 5, posY - 9)
-							&& map.hasColAt(posX + 5, posY + 9)
-							&& !map.hasColAt(posX - 12, posY - 7);
+			wallRight = map.hasColAt(posX + 5, posY - 9)
+					&& map.hasColAt(posX + 5, posY + 9)
+					&& !map.hasColAt(posX - 12, posY - 7);
 		}
 
 		if (!wallLeft && !wallRight) {
@@ -791,9 +784,8 @@ public class Player extends PlayerObject {
 
 			// Walking
 		} else if (oldX != posX && onGround) {
-			playerImage =
-					speedActive > 2 ? animation.get("speed")
-							: animation.get("walk");
+			playerImage = speedActive > 2 ? animation.get("speed") : animation
+					.get("walk");
 
 			// Swimming
 		} else if (oldX != posX && inWater) {
@@ -849,15 +841,14 @@ public class Player extends PlayerObject {
 		if (superJumping || speedActive > 2) {
 			Composite tmp = g.getComposite();
 			AlphaComposite alphaComposite = null;
-
 			for (int i = 0; i < dashes.size(); i++) {
 				int pos[] = dashes.get(i);
-				alphaComposite =
-						AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-								0.25f + i * 0.25f);
+				alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, 0.25f + i * 0.25f);
 				g.setComposite(alphaComposite);
 				g.drawImage(img, pos[0] - 8 - map.screenOffsetX, pos[1] - 16
 						- map.screenOffsetY, null);
+				map.objImgCount++;
 			}
 			g.setComposite(tmp);
 		}
@@ -865,5 +856,6 @@ public class Player extends PlayerObject {
 		// Player
 		g.drawImage(img, posX - 8 - map.screenOffsetX, posY - 16
 				- map.screenOffsetY, null);
+		map.objImgCount++;
 	}
 }

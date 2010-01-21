@@ -35,7 +35,7 @@ public class GroupSoundRenderer extends GroupRenderer {
 		} else {
 			return 1;
 		}
-	//	return size > 10 ? 1 : 0;
+		// return size > 10 ? 1 : 0;
 	}
 
 	@Override
@@ -46,17 +46,17 @@ public class GroupSoundRenderer extends GroupRenderer {
 			int cr = map.getAt(x + 1, y);
 			int cu = map.getAt(x, y - 1);
 			int cd = map.getAt(x, y + 1);
-			if (type == 2 &&(cl == 0 || cr == 0 || cu == 0 || cd == 0)) {
+			if (type == 2 && (cl == 0 || cr == 0 || cu == 0 || cd == 0)) {
 				hasBorder = true;
 			}
-			if (type == 4 &&(cl == 0 || cr == 0 || cu == 0 || cd == 0)) {
+			if (type == 4 && (cl == 0 || cr == 0 || cu == 0 || cd == 0)) {
 				hasBorder = true;
-			} else if (type == 4 &&(cl == 2 || cr == 2 || cu == 2 || cd == 2)) {
+			} else if (type == 4 && (cl == 2 || cr == 2 || cu == 2 || cd == 2)) {
 				hasBorder = true;
 			}
 		}
 	}
-	
+
 	@Override
 	protected boolean compare(final int x, final int y, final int type) {
 		return map.mapData[x][y] == type && groupData[x][y] == 0;

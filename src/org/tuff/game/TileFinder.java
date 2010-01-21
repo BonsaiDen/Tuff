@@ -30,13 +30,13 @@ public class TileFinder {
 	public int minY = 0;
 	public int maxX = 0;
 	public int maxY = 0;
-	
+
 	public TileFinder(TuffMap map) {
 		mapWidth = map.mapWidth;
 		mapHeight = map.mapHeight;
 		this.map = map;
 	}
-	
+
 	protected boolean compare(final int x, final int y) {
 		if (map.colData[x][y] == 1 && map.transparentData[x][y] != 1) {
 			int type = map.surroundType(x, y);
@@ -48,11 +48,11 @@ public class TileFinder {
 			return false;
 		}
 	}
-	
+
 	private void set(final int x, final int y) {
-		result.add(new int[]{x, y});
+		result.add(new int[] { x, y });
 		map.transparentData[x][y] = 1;
-		if (x > maxX ) {
+		if (x > maxX) {
 			maxX = x;
 		}
 		if (x < minX) {
@@ -73,7 +73,7 @@ public class TileFinder {
 		maxX = 0;
 		maxY = 0;
 		result = new ArrayList<int[]>();
-		
+
 		int groupSize = 0;
 		final List<int[]> list = new ArrayList<int[]>();
 		list.add(new int[] { xi, yi });
@@ -83,7 +83,7 @@ public class TileFinder {
 			final int y = i[1];
 			if (compare(xp, y)) {
 				// Left
-				for(int x = xp; x >= 0; x--) {
+				for (int x = xp; x >= 0; x--) {
 					if (compare(x, y)) {
 						set(x, y);
 						groupSize++;
@@ -103,7 +103,7 @@ public class TileFinder {
 				}
 
 				// Right
-				for(int x = xp + 1; x <= mapWidth - 1; x++) {
+				for (int x = xp + 1; x <= mapWidth - 1; x++) {
 					if (compare(x, y)) {
 						set(x, y);
 						groupSize++;

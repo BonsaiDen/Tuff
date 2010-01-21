@@ -61,9 +61,8 @@ public class MapEditor extends GameObject<Tuff> {
 	// Edit
 	private TuffMap map;
 	private ArrayList<int[][]> undoData = new ArrayList<int[][]>();
-	private String[] editModes =
-			new String[] { "NORMAL", "BACKGROUND", "BREAKABLE", "WATER",
-					"COLLISION" };
+	private String[] editModes = new String[] { "NORMAL", "BACKGROUND",
+			"BREAKABLE", "WATER", "COLLISION" };
 
 	// Offsets
 	private int mapOffsetXOld = -1;
@@ -93,9 +92,8 @@ public class MapEditor extends GameObject<Tuff> {
 
 	// Dialogs -----------------------------------------------------------------
 	public String levelPath() {
-		String path =
-				getClass().getResource("/").getPath().substring(1).replace(
-						"%20", " ");
+		String path = getClass().getResource("/").getPath().substring(1)
+				.replace("%20", " ");
 		path = path.substring(0, path.length() - 4) + "src/levels";
 		return path;
 	}
@@ -111,8 +109,7 @@ public class MapEditor extends GameObject<Tuff> {
 	public void initDialog() {
 		if (fc == null) {
 			fc = new JFileChooser(levelPath());
-			FileFilter filter =
-					new FileNameExtensionFilter("Tuff Level", "lvl");
+			FileFilter filter = new FileNameExtensionFilter("Tuff Level", "lvl");
 			fc.setFileFilter(filter);
 		}
 		fc.setSelectedFile(new File(getLevelName(filename)));
@@ -138,11 +135,10 @@ public class MapEditor extends GameObject<Tuff> {
 			if (data == JFileChooser.APPROVE_OPTION) {
 				filename = fc.getSelectedFile().getPath();
 				if (new File(filename).exists()) {
-					overwrite =
-							JOptionPane.showConfirmDialog(parent,
-									"Are you sure to overwrite the file \""
-											+ getLevelName(filename) + "\"?",
-									"Overwrite", JOptionPane.YES_NO_OPTION);
+					overwrite = JOptionPane.showConfirmDialog(parent,
+							"Are you sure to overwrite the file \""
+									+ getLevelName(filename) + "\"?",
+							"Overwrite", JOptionPane.YES_NO_OPTION);
 
 					if (overwrite == JOptionPane.YES_OPTION) {
 						return true;
@@ -199,8 +195,8 @@ public class MapEditor extends GameObject<Tuff> {
 			}
 
 			File file = new File(filename);
-			OutputStream stream =
-					new BufferedOutputStream(new FileOutputStream(file));
+			OutputStream stream = new BufferedOutputStream(
+					new FileOutputStream(file));
 			DataOutputStream out = new DataOutputStream(stream);
 
 			// Header

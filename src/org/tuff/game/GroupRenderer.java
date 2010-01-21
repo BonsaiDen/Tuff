@@ -27,7 +27,7 @@ public class GroupRenderer {
 	protected final int[][] groupData;
 	protected final Map<Integer, Integer> groupInfo;
 	protected final TuffMap map;
-	
+
 	protected boolean hasBorder = false;
 
 	public GroupRenderer(final TuffMap map) {
@@ -45,8 +45,8 @@ public class GroupRenderer {
 				if (type > 0 && groupData[y][x] == 0) {
 					hasBorder = false;
 					groupID += 1;
-					groupInfo.put(groupID,
-							checkSize(group(y, x, groupID, type), hasBorder, type));
+					groupInfo.put(groupID, checkSize(
+							group(y, x, groupID, type), hasBorder, type));
 				}
 			}
 		}
@@ -69,7 +69,7 @@ public class GroupRenderer {
 	protected boolean compare(final int x, final int y, final int type) {
 		return map.mapData[x][y] != 0 && groupData[x][y] == 0;
 	}
-	
+
 	protected void set(final int x, final int y, final int type, final int group) {
 		groupData[x][y] = group;
 	}
@@ -86,10 +86,10 @@ public class GroupRenderer {
 			final int y = i[1];
 			if (compare(xp, y, type)) {
 				// Left
-				for(int x = xp; x >= 0; x--) {
+				for (int x = xp; x >= 0; x--) {
 					if (compare(x, y, type)) {
 						set(x, y, type, group);
-						//groupData[x][y] = group;
+						// groupData[x][y] = group;
 						groupSize++;
 
 						// Up
@@ -98,7 +98,8 @@ public class GroupRenderer {
 						}
 
 						// Down
-						if (y + 1 <= map.mapHeight - 1 && compare(x, y + 1, type)) {
+						if (y + 1 <= map.mapHeight - 1
+								&& compare(x, y + 1, type)) {
 							list.add(new int[] { x, y + 1 });
 						}
 					} else {
@@ -107,9 +108,9 @@ public class GroupRenderer {
 				}
 
 				// Right
-				for(int x = xp + 1; x <= map.mapWidth - 1; x++) {
+				for (int x = xp + 1; x <= map.mapWidth - 1; x++) {
 					if (compare(x, y, type)) {
-					//	groupData[x][y] = group;
+						// groupData[x][y] = group;
 						set(x, y, type, group);
 						groupSize++;
 
@@ -119,7 +120,8 @@ public class GroupRenderer {
 						}
 
 						// Down
-						if (y + 1 <= map.mapHeight - 1 && compare(x, y + 1, type)) {
+						if (y + 1 <= map.mapHeight - 1
+								&& compare(x, y + 1, type)) {
 							list.add(new int[] { x, y + 1 });
 						}
 					} else {

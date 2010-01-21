@@ -138,9 +138,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 			load();
 
 			// Music
-			currentMusic =
-					map.getSoundAt(player.posX / map.tileSize,
-							(player.posY - 7) / map.tileSize);
+			currentMusic = map.getSoundAt(player.posX / map.tileSize,
+					(player.posY - 7) / map.tileSize);
 
 			// profile((Object)this);
 
@@ -201,6 +200,14 @@ public final class Tuff extends org.bonsai.dev.Game {
 				console.print("In a desert far away...");
 			}
 
+		} else if (cmd.equals("warp")) {
+			for (int i = 0; i < map.mapObjects.size(); i++) {
+				int[] p = map.mapObjects.get(i);
+				if (p[0] == 0 && p[3] == 3) {
+					p[3] = 4;
+				}
+			}
+
 		} else if (cmd.equals("sound")) {
 			map.showSound = !map.showSound;
 			if (map.showSound) {
@@ -224,9 +231,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 	public void updateGame(final boolean loaded) {
 		if (loaded) {
 			// Music
-			int m =
-					map.getSoundAt(player.posX / map.tileSize,
-							(player.posY - 7) / map.tileSize);
+			int m = map.getSoundAt(player.posX / map.tileSize,
+					(player.posY - 7) / map.tileSize);
 			if (m != -1 && m != currentMusic) {
 				if (currentMusic == 2) {
 					if (timer.expired("outWater")) {
@@ -316,16 +322,15 @@ public final class Tuff extends org.bonsai.dev.Game {
 				if (input.keyPressed(java.awt.event.KeyEvent.VK_F1)) {
 					Toolkit toolkit = Toolkit.getDefaultToolkit();
 					Dimension size = toolkit.getScreenSize();
-					int width =
-							(int) size.getWidth()
-									- (getFrame().getInsets().left + getFrame().getInsets().right);
+					int width = (int) size.getWidth()
+							- (getFrame().getInsets().left + getFrame()
+									.getInsets().right);
 					width = (width / 16) * 16;
 
-					int height =
-							(int) size.getHeight()
-									- (getFrame().getInsets().top
-											+ getFrame().getInsets().bottom
-											+ menu.getSize() + 32);
+					int height = (int) size.getHeight()
+							- (getFrame().getInsets().top
+									+ getFrame().getInsets().bottom
+									+ menu.getSize() + 32);
 					height = (height / 16) * 16;
 					setSize(width, height);
 
@@ -348,17 +353,17 @@ public final class Tuff extends org.bonsai.dev.Game {
 			if (input.keyPressed(java.awt.event.KeyEvent.VK_PRINTSCREEN)) {
 				try {
 					Calendar cal = Calendar.getInstance();
-					String foo = String.format("screenshot %d-%d-%d %d-%d-%d.png", 
-							cal.get(Calendar.DATE), 
-							cal.get(Calendar.MONTH) + 1, 
-							cal.get(Calendar.YEAR),
-							cal.get(Calendar.HOUR_OF_DAY),
-							cal.get(Calendar.MINUTE),
-							cal.get(Calendar.SECOND));
-					
-					
-					ImageIO.write(image.getScreen(), "png",
-							new File(getBasePath() + foo));
+					String foo = String.format(
+							"screenshot %d-%d-%d %d-%d-%d.png", cal
+									.get(Calendar.DATE), cal
+									.get(Calendar.MONTH) + 1, cal
+									.get(Calendar.YEAR), cal
+									.get(Calendar.HOUR_OF_DAY), cal
+									.get(Calendar.MINUTE), cal
+									.get(Calendar.SECOND));
+
+					ImageIO.write(image.getScreen(), "png", new File(
+							getBasePath() + foo));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -421,9 +426,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 			// Flash
 			if (flashValue > 0.0f) {
 				Composite tmp = g.getComposite();
-				AlphaComposite alphaComposite =
-						AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-								(float) (flashValue / 255.0));
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, (float) (flashValue / 255.0));
 				g.setComposite(alphaComposite);
 				g.drawImage(currentFlashImage, null, 0, 0);
 				g.setComposite(tmp);
@@ -542,8 +546,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 
 	public void fadeScreen(Graphics2D g) {
 		Composite tmp = g.getComposite();
-		AlphaComposite alphaComposite =
-				AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+		AlphaComposite alphaComposite = AlphaComposite.getInstance(
+				AlphaComposite.SRC_OVER, 0.5f);
 		g.setComposite(alphaComposite);
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, width(), height());
@@ -707,8 +711,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 		}
 
 		// New Save files
-		DataInputStream data =
-				new DataInputStream(new ByteArrayInputStream(bytes.clone()));
+		DataInputStream data = new DataInputStream(new ByteArrayInputStream(
+				bytes.clone()));
 		if (readString(data, 3).equals("OPT")) {
 			soundActive = data.readBoolean();
 			musicActive = data.readBoolean();

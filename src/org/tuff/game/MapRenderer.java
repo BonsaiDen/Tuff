@@ -48,24 +48,24 @@ public class MapRenderer {
 	}
 
 	public void render() {
-	//	long time = System.nanoTime(); // 45
+		// long time = System.nanoTime(); // 45
 		GroupRenderer ground = new GroupRenderer(map);
 		ground.render();
-		
+
 		Map<Integer, Integer> groupGround = ground.groupInfo;
 		int[][] groupData = ground.groupData;
-	//	System.out.println((System.nanoTime() - time) / 1000000);
+		// System.out.println((System.nanoTime() - time) / 1000000);
 
-	//	time = System.nanoTime(); // 36
+		// time = System.nanoTime(); // 36
 		GroupSoundRenderer sound = new GroupSoundRenderer(map);
 		sound.render();
 		Map<Integer, Integer> groupSound = sound.groupInfo;
 		int[][] groupSoundData = sound.groupData;
-	//	System.out.println((System.nanoTime() - time) / 1000000);
+		// System.out.println((System.nanoTime() - time) / 1000000);
 
 		// 55
-	//	time = System.nanoTime();
-		for (int y = 0; y< map.mapHeight; y++) {
+		// time = System.nanoTime();
+		for (int y = 0; y < map.mapHeight; y++) {
 			for (int x = 0; x < map.mapWidth; x++) {
 				map.drawData[y][x] = 0;
 				map.borderData[y][x] = 0;
@@ -76,9 +76,9 @@ public class MapRenderer {
 				map.soundData[y][x] = (byte) s;
 			}
 		}
-	//	System.out.println((System.nanoTime() - time) / 1000000);
+		// System.out.println((System.nanoTime() - time) / 1000000);
 	}
-	
+
 	private void setTypeData(int x, int y, boolean transparent) {
 		int[] type = getTypeData(x, y, transparent);
 		if (transparent) {
@@ -123,7 +123,7 @@ public class MapRenderer {
 				if ((transparent && trans == 1) && map.transparentTile == 4) {
 					border = 0;
 					border += getAt(x, y - 1, 0, 0) ? 1 : 0; // Up
-					border += getAt(x, y - 1, 2, 0) ? 1 : 0; // Up		
+					border += getAt(x, y - 1, 2, 0) ? 1 : 0; // Up
 				}
 			} else if (type == 4) {
 				border += getAt(x, y - 1, 0, 0) ? 1 : 0; // Up
@@ -135,19 +135,23 @@ public class MapRenderer {
 			tile += getAt(x - 1, y, type, trans) ? 0 : 8; // Left
 
 			// Top Left
-			overlay += getAt(x - 1, y, type, trans) && getAt(x, y - 1, type, trans)
+			overlay += getAt(x - 1, y, type, trans)
+					&& getAt(x, y - 1, type, trans)
 					&& !getAt(x - 1, y - 1, type, trans) ? 1 : 0;
 
 			// Top Right
-			overlay += getAt(x + 1, y, type, trans) && getAt(x, y - 1, type, trans)
+			overlay += getAt(x + 1, y, type, trans)
+					&& getAt(x, y - 1, type, trans)
 					&& !getAt(x + 1, y - 1, type, trans) ? 2 : 0;
 
 			// Bottom Right
-			overlay += getAt(x + 1, y, type, trans) && getAt(x, y + 1, type, trans)
+			overlay += getAt(x + 1, y, type, trans)
+					&& getAt(x, y + 1, type, trans)
 					&& !getAt(x + 1, y + 1, type, trans) ? 4 : 0;
 
 			// Bottom Left
-			overlay += getAt(x - 1, y, type, trans) && getAt(x, y + 1, type, trans)
+			overlay += getAt(x - 1, y, type, trans)
+					&& getAt(x, y + 1, type, trans)
 					&& !getAt(x - 1, y + 1, type, trans) ? 8 : 0;
 
 		}
@@ -158,7 +162,8 @@ public class MapRenderer {
 		if (x < 0 || y < 0 || x > map.mapWidth - 1 || y > map.mapHeight - 1) {
 			return true;
 		} else {
-			return map.mapData[x][y] == type && map.transparentData[x][y] == trans;
+			return map.mapData[x][y] == type
+					&& map.transparentData[x][y] == trans;
 		}
 	}
 }

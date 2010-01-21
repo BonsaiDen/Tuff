@@ -64,12 +64,10 @@ public class TuffMap extends GameObject<Tuff> {
 	private List<int[]> normalTileList = new ArrayList<int[]>();
 	private List<int[]> transparentTileList = new ArrayList<int[]>();
 	private Map<Integer, Long> breakedBlocks = new HashMap<Integer, Long>();
-	private Map<Integer, Integer> breakedBlocksStatus =
-			new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> breakedBlocksStatus = new HashMap<Integer, Integer>();
 
 	// Value
-	protected String[] powerModes =
-			new String[] { "J", "W", "U", "D", "B", "S" };
+	protected String[] powerModes = new String[] { "J", "W", "U", "D", "B", "S" };
 	protected int shardCount = 0;
 	private Color blockColor = new Color(152, 152, 152);
 
@@ -140,8 +138,8 @@ public class TuffMap extends GameObject<Tuff> {
 	// Enemies
 	// public List<Enemy> enemies;
 
-	private Color[] colors =
-			new Color[] { Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE };
+	private Color[] colors = new Color[] { Color.RED, Color.GREEN,
+			Color.YELLOW, Color.BLUE };
 
 	public TuffMap(Tuff g, boolean edit) {
 		super(g);
@@ -189,30 +187,26 @@ public class TuffMap extends GameObject<Tuff> {
 		public BufferedImage[][][][] tiles;
 		private BufferedImage[][] overlayEdges;
 
-		private int[][] lowerTiles =
-				{ {}, { 1 }, { 5 }, { 1, 5, 2 }, { 7 }, { 1, 7 }, { 5, 7, 8 },
-						{ 1, 5, 7, 2, 8 }, { 3 }, { 1, 3, 0 }, { 3, 5 },
-						{ 1, 3, 5, 0, 2 }, { 3, 7, 6 }, { 1, 3, 7, 0, 6 },
-						{ 3, 5, 7, 6, 8 }, { 1, 3, 5, 7, 0, 2, 6, 8 } };
+		private int[][] lowerTiles = { {}, { 1 }, { 5 }, { 1, 5, 2 }, { 7 },
+				{ 1, 7 }, { 5, 7, 8 }, { 1, 5, 7, 2, 8 }, { 3 }, { 1, 3, 0 },
+				{ 3, 5 }, { 1, 3, 5, 0, 2 }, { 3, 7, 6 }, { 1, 3, 7, 0, 6 },
+				{ 3, 5, 7, 6, 8 }, { 1, 3, 5, 7, 0, 2, 6, 8 } };
 
-		private int[][] upperTiles =
-				{ {}, { 0 }, { 1 }, { 0, 1 }, { 3 }, { 0, 3 }, { 1, 3 },
-						{ 0, 1, 3 }, { 2 }, { 0, 2 }, { 1, 2 }, { 0, 1, 2 },
-						{ 2, 3 }, { 0, 2, 3 }, { 1, 2, 3 }, { 0, 1, 2, 3 }
+		private int[][] upperTiles = { {}, { 0 }, { 1 }, { 0, 1 }, { 3 },
+				{ 0, 3 }, { 1, 3 }, { 0, 1, 3 }, { 2 }, { 0, 2 }, { 1, 2 },
+				{ 0, 1, 2 }, { 2, 3 }, { 0, 2, 3 }, { 1, 2, 3 }, { 0, 1, 2, 3 }
 
-				};
+		};
 
-		private int[][] tileCombinations =
-				{ { 1, 0 }, { 1, 4 }, { 1, 8 }, { 1, 12 }, { 2, 0 }, { 2, 1 },
-						{ 2, 8 }, { 2, 9 }, { 3, 0 }, { 3, 8 }, { 4, 0 },
-						{ 4, 1 }, { 4, 2 }, { 4, 3 }, { 5, 0 }, { 6, 0 },
-						{ 6, 1 }, { 7, 0 }, { 8, 0 }, { 8, 2 }, { 8, 4 },
-						{ 8, 6 }, { 9, 0 }, { 9, 4 }, { 10, 0 }, { 11, 0 },
-						{ 12, 0 }, { 12, 2 }, { 13, 0 }, { 14, 0 }, { 15, 0 },
-						{ 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 },
-						{ 0, 5 }, { 0, 6 }, { 0, 7 }, { 0, 8 }, { 0, 9 },
-						{ 0, 10 }, { 0, 11 }, { 0, 12 }, { 0, 13 }, { 0, 14 },
-						{ 0, 15 } };
+		private int[][] tileCombinations = { { 1, 0 }, { 1, 4 }, { 1, 8 },
+				{ 1, 12 }, { 2, 0 }, { 2, 1 }, { 2, 8 }, { 2, 9 }, { 3, 0 },
+				{ 3, 8 }, { 4, 0 }, { 4, 1 }, { 4, 2 }, { 4, 3 }, { 5, 0 },
+				{ 6, 0 }, { 6, 1 }, { 7, 0 }, { 8, 0 }, { 8, 2 }, { 8, 4 },
+				{ 8, 6 }, { 9, 0 }, { 9, 4 }, { 10, 0 }, { 11, 0 }, { 12, 0 },
+				{ 12, 2 }, { 13, 0 }, { 14, 0 }, { 15, 0 }, { 0, 0 }, { 0, 1 },
+				{ 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 0, 6 }, { 0, 7 },
+				{ 0, 8 }, { 0, 9 }, { 0, 10 }, { 0, 11 }, { 0, 12 }, { 0, 13 },
+				{ 0, 14 }, { 0, 15 } };
 
 		public TileGenerator() {
 			backgrounds = image.gets("/images/ground.png", 5, 4);
@@ -236,8 +230,8 @@ public class TuffMap extends GameObject<Tuff> {
 		private void generateUpper(final Graphics2D g, final int id,
 				final int type) {
 			if (overlayEdges[type - 1][0] == null) {
-				overlayEdges[type - 1] =
-						image.gets(overlays[4 + (type - 1) * 9], 2, 2);
+				overlayEdges[type - 1] = image.gets(
+						overlays[4 + (type - 1) * 9], 2, 2);
 			}
 			for (int i = 0; i < upperTiles[id].length; i++) {
 				final int tile = upperTiles[id][i];
@@ -258,8 +252,7 @@ public class TuffMap extends GameObject<Tuff> {
 					generateLower(g, tileCombinations[i][0], border);
 					generateUpper(g, tileCombinations[i][1], border);
 				}
-				tiles[type][ground][tileCombinations[i][0]][tileCombinations[i][1]] =
-						img;
+				tiles[type][ground][tileCombinations[i][0]][tileCombinations[i][1]] = img;
 				g.dispose();
 			}
 		}
@@ -401,7 +394,8 @@ public class TuffMap extends GameObject<Tuff> {
 				} else if (p[3] == 2) {
 					if (player.posX >= x && player.posX < x + 16) {
 						if (player.posY - 7 >= y && player.posY - 7 < y + 16) {
-							player.entitiesCollected.add(new int[] { p[1], p[2] });
+							player.entitiesCollected
+									.add(new int[] { p[1], p[2] });
 							updateLocal();
 							game.flashScreen();
 						}
@@ -954,9 +948,10 @@ public class TuffMap extends GameObject<Tuff> {
 		// Background Tiles
 		final int tra = transparentData[x][y];
 		if (tra != 2 || showTransparentTiles) {
-			g.drawImage(
-					tileGen.tiles[type][ground][tile < 16 ? tile : 0][overlayData[x][y]],
-					px, py, null);
+			g
+					.drawImage(
+							tileGen.tiles[type][ground][tile < 16 ? tile : 0][overlayData[x][y]],
+							px, py, null);
 			imgCount++;
 		}
 
@@ -983,9 +978,9 @@ public class TuffMap extends GameObject<Tuff> {
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 					1.0f - tileTransparency));
 			final int ttile = drawTransparentData[x][y];
-			g.drawImage(
-					tileGen.tiles[type][ground][ttile < 16 ? ttile : 0][overlayTransparentData[x][y]],
-					px, py, null);
+			g
+					.drawImage(tileGen.tiles[type][ground][ttile < 16 ? ttile
+							: 0][overlayTransparentData[x][y]], px, py, null);
 			imgCount++;
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 					1.0f));
@@ -1032,9 +1027,9 @@ public class TuffMap extends GameObject<Tuff> {
 				// Save Points
 			} else if (p[3] == 1) {
 				final int x = (p[1] * tileSize - screenOffsetX);
-				final int y =
-						(p[2] * tileSize - screenOffsetY) + 10
-								- (int) saveScale;
+				final int y = (p[2] * tileSize - screenOffsetY) + 10
+						- (int) saveScale;
+
 				if (isVisible(x, y, 16, 6 + (int) saveScale)) {
 					g.drawImage(saveTiles[animation.get("save")], x, y, 16,
 							6 + (int) saveScale, null);
@@ -1044,14 +1039,14 @@ public class TuffMap extends GameObject<Tuff> {
 				// Warps
 			} else if (p[3] == 3 || p[3] == 4) {
 				final int x = (p[1] * tileSize - screenOffsetX);
-				final int y =
-						(p[2] * tileSize - screenOffsetY) + 10
-								- (p[3] == 4 ? (int) warpScale + 6 : 0);
+				final int y = (p[2] * tileSize - screenOffsetY) + 10
+						- (p[3] == 4 ? (int) warpScale + 6 : 0);
+
 				if (isVisible(x, y, 16, 6 + (p[3] == 4 ? (int) warpScale + 6
 						: 0))) {
 					g.drawImage(warpTiles[animation.get("warp")
-							+ (p[3] == 4 ? 0 : 3)], x, y, 16, 6 + (p[3] == 4
-							? (int) warpScale + 6 : 0), null);
+							+ (p[3] == 4 ? 0 : 3)], x, y, 16,
+							6 + (p[3] == 4 ? (int) warpScale + 6 : 0), null);
 					objImgCount++;
 				}
 
@@ -1105,14 +1100,11 @@ public class TuffMap extends GameObject<Tuff> {
 					final Integer id = p[1] * mapWidth + p[2];
 					if (breakedBlocks.containsKey(id)) {
 						long time = getTime() - breakedBlocks.get(id);
-						int img = (int) Math.min(6, time / 50);
-						if (breakedBlocksStatus.get(id) == 1) {
-							img = (int) Math.min(6, time / 50);
-						} else {
-							img = 6 - (int) Math.min(6, (time - 2000) / 50);
-							if (img < 0) {
-								img = 0;
-							}
+						int img = breakedBlocksStatus.get(id) == 1 ? (int) Math
+								.min(6, time / 50) : 6 - (int) Math.min(6,
+								(time - 2000) / 50);
+						if (img < 0) {
+							img = 0;
 						}
 						g.setComposite(AlphaComposite.getInstance(
 								AlphaComposite.SRC_OVER, 1.0f - img * 0.16f));
@@ -1160,16 +1152,15 @@ public class TuffMap extends GameObject<Tuff> {
 		// Break Effects
 		for (int i = 0; i < breakEffects.size(); i++) {
 			final int[] effect = breakEffects.get(i);
-			final float d =
-					(float) (100.0 / 500.0 * (game.getTime() - effect[0])) / 100;
+			final float d = (float) (100.0 / 500.0 * (game.getTime() - effect[0])) / 100;
 			if (d > 1.0) {
 				breakEffects.remove(i);
 			} else if (d < 1.0 && d > 0.0) {
 				final int type = effect[3];
-				final int x =
-						effect[1] * tileSize - screenOffsetX - (type - 1) * 24;
-				final int y =
-						effect[2] * tileSize - screenOffsetY - (type - 1) * 24;
+				final int x = effect[1] * tileSize - screenOffsetX - (type - 1)
+						* 24;
+				final int y = effect[2] * tileSize - screenOffsetY - (type - 1)
+						* 24;
 				int size = (int) (20 + 24 * d) * type;
 
 				g.setColor(type == 1 ? Color.GRAY : blockColor);
@@ -1233,9 +1224,8 @@ public class TuffMap extends GameObject<Tuff> {
 
 	private InputStream getMapFile(String filename) {
 		try {
-			File file =
-					new File(filename != null ? filename : getPath()
-							+ "levels/level.lvl");
+			File file = new File(filename != null ? filename : getPath()
+					+ "levels/level.lvl");
 			return new FileInputStream(file);
 
 		} catch (Exception e) {
@@ -1262,8 +1252,8 @@ public class TuffMap extends GameObject<Tuff> {
 		transparentTileList.clear();
 
 		try {
-			DataInputStream in =
-					new DataInputStream(new BufferedInputStream(stream));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(
+					stream));
 
 			// Header
 			if (!game.readString(in, 5).equals("TUFF2")) {
