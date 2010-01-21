@@ -171,8 +171,8 @@ public class TuffMap extends GameObject<Tuff> {
 		animation.add("water", new int[] { 0, 1, 2, 1 }, 125, true);
 		animation.add("save", new int[] { 0, 1, 2, 1 }, 75, true);
 		animation.add("warp", new int[] { 0, 1, 2, 1 }, 75, true);
-		animation.add("shard", new int[] { 0, 0, 1, 2, 1, 0, 0, 3, 4, 3, 0,
-				0, 5, 6, 5 }, 125, true);
+		animation.add("shard", new int[] { 0, 0, 1, 2, 1, 0, 0, 3, 4, 3, 0, 0,
+				5, 6, 5 }, 125, true);
 
 		// Init
 		screenWidth = game.width() / tileSize;
@@ -479,7 +479,8 @@ public class TuffMap extends GameObject<Tuff> {
 					if (time > 2000) {
 						breakedBlocksStatus.put(id, 2);
 					}
-					if (!player.isIn(p[1] * tileSize, p[2] * tileSize, 16, 16)) {
+					if (!player.isIn(p[1] * tileSize, p[2] * tileSize, 16, 16)
+							|| player.onGround()) {
 						if (time > 2500) {
 							breakedBlocks.remove(id);
 							breakedBlocksStatus.remove(id);
@@ -973,7 +974,8 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Water
 		if (type == 4) {
-			waterTileList.add(new int[] { px, py, (x % 2 == 1 && y % 2 == 1 ? 3 : 0) });
+			waterTileList.add(new int[] { px, py,
+					(x % 2 == 1 && y % 2 == 1 ? 3 : 0) });
 		}
 
 		// Transparency Overlay
@@ -1058,8 +1060,7 @@ public class TuffMap extends GameObject<Tuff> {
 				final int x = p[1] * tileSize - screenOffsetX;
 				final int y = p[2] * tileSize - screenOffsetY;
 				if (isVisible(x, y, 16, 16)) {
-					g.drawImage(shardTiles[animation.get("shard")], x, y,
-							null);
+					g.drawImage(shardTiles[animation.get("shard")], x, y, null);
 					objImgCount++;
 				}
 
@@ -1094,6 +1095,7 @@ public class TuffMap extends GameObject<Tuff> {
 		waterBorderList.clear();
 
 		// Blocks
+		Composite tmp = g.getComposite();
 		for (int e = 0; e < localBlocks.size(); e++) {
 			final int p[] = localBlocks.get(e);
 			final int x = p[1] * tileSize - screenOffsetX;
@@ -1112,12 +1114,18 @@ public class TuffMap extends GameObject<Tuff> {
 								img = 0;
 							}
 						}
+						g.setComposite(AlphaComposite.getInstance(
+								AlphaComposite.SRC_OVER, 1.0f - img * 0.16f));
 						g.drawImage(blockTiles[img], x, y, null);
 					} else {
+						g.setComposite(AlphaComposite.getInstance(
+								AlphaComposite.SRC_OVER, 1f));
 						g.drawImage(blockTiles[0], x, y, null);
 					}
 
 				} else {
+					g.setComposite(AlphaComposite.getInstance(
+							AlphaComposite.SRC_OVER, 1f));
 					g.drawImage(blockTile, x, y, null);
 					String str = Integer.toString(p[4]);
 					if (p[4] == 0) {
@@ -1137,7 +1145,6 @@ public class TuffMap extends GameObject<Tuff> {
 		}
 
 		// Transparent Overlay
-		Composite tmp = g.getComposite();
 		if (!noHide) {
 			for (int e = 0; e < normalTileList.size(); e++) {
 				final int t[] = normalTileList.get(e);

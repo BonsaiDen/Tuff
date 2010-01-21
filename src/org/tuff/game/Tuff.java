@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -346,8 +347,18 @@ public final class Tuff extends org.bonsai.dev.Game {
 			// Screenshot
 			if (input.keyPressed(java.awt.event.KeyEvent.VK_PRINTSCREEN)) {
 				try {
+					Calendar cal = Calendar.getInstance();
+					String foo = String.format("screenshot %d-%d-%d %d-%d-%d.png", 
+							cal.get(Calendar.DATE), 
+							cal.get(Calendar.MONTH) + 1, 
+							cal.get(Calendar.YEAR),
+							cal.get(Calendar.HOUR_OF_DAY),
+							cal.get(Calendar.MINUTE),
+							cal.get(Calendar.SECOND));
+					
+					
 					ImageIO.write(image.getScreen(), "png",
-							new File(getBasePath() + "screenshot.png"));
+							new File(getBasePath() + foo));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -444,17 +455,14 @@ public final class Tuff extends org.bonsai.dev.Game {
 	}
 
 	private void showShards(Graphics2D g, int x, int y) {
-		g.drawImage(map.shardTiles[animation.get("shard")], x - 2, y - 4,
-				null);
-		font.draw(g, "x" + Integer.toString(player.entitiesCollected.size())
-				+ "/" + Integer.toString(map.shardCount), x + 12, y);
+		g.drawImage(map.shardTiles[animation.get("shard")], x - 2, y - 4, null);
+		font.draw(g, "x " + player.entitiesCollected.size() + "/"
+				+ map.shardCount, x + 12, y);
 	}
 
 	private void showFPS(Graphics2D g, int x, int y) {
-		font.draw(g, "FPS: " + Integer.toString(getFPS()) + "/"
-				+ Integer.toString(getMaxFPS()) + "\n" + "IMG: "
-				+ Integer.toString(map.imgCount) + "/"
-				+ Integer.toString(map.objImgCount), x, y);
+		font.draw(g, String.format("FPS: %d/%d\nIMG: %d/%d", getFPS(),
+				getMaxFPS(), map.imgCount, map.objImgCount), x, y);
 	}
 
 	@Override
