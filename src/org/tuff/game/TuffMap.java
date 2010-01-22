@@ -115,6 +115,7 @@ public class TuffMap extends GameObject<Tuff> {
 	private int transparentOldY = 0;
 	private boolean transparentMode = false;
 	private boolean showTransparentTiles = false;
+	private float oldTileTransparency = 0.0f;
 
 	// Editor & Renderer
 	private MapRenderer renderer;
@@ -124,7 +125,6 @@ public class TuffMap extends GameObject<Tuff> {
 	private boolean isLoading = false;
 
 	// Tiles
-	public int imgCount;
 	public int objImgCount;
 	protected TileGenerator tileGen;
 
@@ -134,6 +134,11 @@ public class TuffMap extends GameObject<Tuff> {
 	protected boolean showSound = false;
 	protected boolean noHide = false;
 	protected boolean noBorders = false;
+
+	// Cache
+	public BufferedImage mapCache = null;
+	public int oldMX = -1;
+	public int oldMY = -1;
 
 	// Enemies
 	// public List<Enemy> enemies;
@@ -164,6 +169,7 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Tile Generator
 		tileGen = new TileGenerator();
+		mapCache = image.create(game.width() + 16, game.height() + 16, false);
 
 		// Animations
 		animation.add("water", new int[] { 0, 1, 2, 1 }, 125, true);
@@ -272,7 +278,8 @@ public class TuffMap extends GameObject<Tuff> {
 				warpScale = 0.0f;
 			}
 		}
-
+		
+		oldTileTransparency = tileTransparency;
 		if (!player.hasControl) {
 			scrollOffsetX = 0;
 			scrollOffsetY = 0;
@@ -330,6 +337,7 @@ public class TuffMap extends GameObject<Tuff> {
 				transparentY = ty;
 				transparentMode = true;
 			}
+			
 			if (transparent) {
 				// Get Tile List
 				if (tileTransparency == 1.0f
@@ -351,8 +359,10 @@ public class TuffMap extends GameObject<Tuff> {
 				tileTransparency += 0.1f;
 				if (tileTransparency > 1.0f) {
 					tileTransparency = 1.0f;
-					showTransparentTiles = false;
-					removeTransparency();
+					if (showTransparentTiles) {
+						showTransparentTiles = false;
+						removeTransparency();
+					}
 				}
 			}
 			transparentOldX = transparentX;
@@ -879,29 +889,41 @@ public class TuffMap extends GameObject<Tuff> {
 		checkSector();
 
 		// Draw Map
-		imgCount = 0;
 		objImgCount = 0;
-		for (int y = mapOffsetY; y < mapOffsetY + screenHeight
-				+ (scrollOffsetY != 0 ? 1 : 0); y++) {
-			if (y < mapHeight) {
-				for (int x = mapOffsetX; x < mapOffsetX + screenWidth
-						+ (scrollOffsetX != 0 ? 1 : 0); x++) {
-					if (x < mapWidth) {
-						final int type = mapData[x][y];
-						final int tile = drawData[x][y];
-						if (tile > 0) {
-							if (colData[x][y] == 1) {
-								drawTile(g, transparentTile, tile, x, y,
-										transparentTile);
-								normalTileList.add(new int[] { 1, tile, x, y });
-							} else {
-								drawTile(g, type, tile, x, y, 0);
+		if (oldMX != mapOffsetX || oldMY != mapOffsetY || tileTransparency != oldTileTransparency) {
+			Graphics2D bg = (Graphics2D) mapCache.getGraphics();
+			bg.setColor(game.bgColor);
+			bg.fillRect(0, 0, game.width() + 16, game.height() + 16);
+			waterTileList.clear();
+			waterBorderList.clear();
+			normalTileList.clear();
+			for (int y = mapOffsetY; y < mapOffsetY + screenHeight + 1; y++) {
+				if (y > 0 && y < mapHeight) {
+					for (int x = mapOffsetX; x < mapOffsetX + screenWidth + 1; x++) {
+						if (x > 0 && x < mapWidth) {
+							final int type = mapData[x][y];
+							final int tile = drawData[x][y];
+							if (tile > 0) {
+								if (colData[x][y] == 1) {
+									drawTile(bg, transparentTile, tile, x, y,
+											transparentTile, false);
+									normalTileList.add(new int[] { 1, tile, x,
+											y });
+								} else {
+									drawTile(bg, type, tile, x, y, 0, false);
+								}
 							}
 						}
 					}
 				}
 			}
+			bg.dispose();
+			oldMX = mapOffsetX;
+			oldMY = mapOffsetY;
 		}
+		
+		// Draw Cache Image
+		g.drawImage(mapCache, 0 - scrollOffsetX, 0 - scrollOffsetY, null);
 
 		// Draw Trees
 		if (!wasteLand) {
@@ -935,9 +957,12 @@ public class TuffMap extends GameObject<Tuff> {
 
 	// Draw a Tile
 	private synchronized void drawTile(final Graphics2D g, final int type,
-			final int tile, final int x, final int y, final int trans) {
-		final int px = (x - mapOffsetX) * tileSize - scrollOffsetX;
-		final int py = (y - mapOffsetY) * tileSize - scrollOffsetY;
+			final int tile, final int x, final int y, final int trans,
+			final boolean offset) {
+		final int px = (x - mapOffsetX) * tileSize
+				- (offset ? scrollOffsetX : 0);
+		final int py = (y - mapOffsetY) * tileSize
+				- (offset ? scrollOffsetY : 0);
 
 		// Ground
 		final int ground = groundData[x][y];
@@ -952,7 +977,6 @@ public class TuffMap extends GameObject<Tuff> {
 					.drawImage(
 							tileGen.tiles[type][ground][tile < 16 ? tile : 0][overlayData[x][y]],
 							px, py, null);
-			imgCount++;
 		}
 
 		// Border
@@ -963,7 +987,6 @@ public class TuffMap extends GameObject<Tuff> {
 			} else {
 				g.drawImage(borderTiles[borderData[x][y] + (type - 1) * 16],
 						px, py, null);
-				imgCount++;
 			}
 		}
 
@@ -981,7 +1004,6 @@ public class TuffMap extends GameObject<Tuff> {
 			g
 					.drawImage(tileGen.tiles[type][ground][ttile < 16 ? ttile
 							: 0][overlayTransparentData[x][y]], px, py, null);
-			imgCount++;
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 					1.0f));
 
@@ -992,7 +1014,6 @@ public class TuffMap extends GameObject<Tuff> {
 				} else {
 					g.drawImage(borderTiles[borderTransparentData[x][y]
 							+ (type - 1) * 16], px, py, null);
-					imgCount++;
 				}
 			}
 		}
@@ -1076,18 +1097,15 @@ public class TuffMap extends GameObject<Tuff> {
 			for (int e = 0; e < waterTileList.size(); e++) {
 				final int tile[] = waterTileList.get(e);
 				g.drawImage(waterTiles[animation.get("water") + tile[2]],
-						tile[0], tile[1], null);
-				imgCount++;
+						tile[0] - scrollOffsetX, tile[1] - scrollOffsetY, null);
 			}
-			waterTileList.clear();
+
 			for (int e = 0; e < waterBorderList.size(); e++) {
 				final int tile[] = waterBorderList.get(e);
-				g.drawImage(borderTiles[1 + (4 - 1) * 16], tile[0], tile[1],
-						null);
-				imgCount++;
+				g.drawImage(borderTiles[1 + (4 - 1) * 16], tile[0]
+						- scrollOffsetX, tile[1] - scrollOffsetY, null);
 			}
 		}
-		waterBorderList.clear();
 
 		// Blocks
 		Composite tmp = g.getComposite();
@@ -1144,10 +1162,9 @@ public class TuffMap extends GameObject<Tuff> {
 						AlphaComposite.SRC_OVER,
 						transparentData[t[2]][t[3]] == 1 ? tileTransparency
 								: (player.hasControl ? 1.0f : 0.5f)));
-				drawTile(g, t[0], t[1], t[2], t[3], 0);
+				drawTile(g, t[0], t[1], t[2], t[3], 0, true);
 			}
 		}
-		normalTileList.clear();
 
 		// Break Effects
 		for (int i = 0; i < breakEffects.size(); i++) {
@@ -1161,8 +1178,8 @@ public class TuffMap extends GameObject<Tuff> {
 						* 24;
 				final int y = effect[2] * tileSize - screenOffsetY - (type - 1)
 						* 24;
-				int size = (int) (20 + 24 * d) * type;
 
+				int size = (int) (20 + 24 * d) * type;
 				g.setColor(type == 1 ? Color.GRAY : blockColor);
 				g.setComposite(AlphaComposite.getInstance(
 						AlphaComposite.SRC_OVER, 0.5f - 0.5f * d));

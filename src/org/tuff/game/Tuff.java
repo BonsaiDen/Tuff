@@ -207,6 +207,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 					p[3] = 4;
 				}
 			}
+			console.print("Woooooooosh");
 
 		} else if (cmd.equals("sound")) {
 			map.showSound = !map.showSound;
@@ -396,9 +397,6 @@ public final class Tuff extends org.bonsai.dev.Game {
 	@Override
 	public void renderGame(final boolean loaded, final Graphics2D g) {
 		if (loaded) {
-			g.setColor(bgColor);
-			g.fillRect(0, 0, width(), height());
-
 			// Draw#
 			map.draw(g, player);
 			player.draw(g);
@@ -465,8 +463,8 @@ public final class Tuff extends org.bonsai.dev.Game {
 	}
 
 	private void showFPS(Graphics2D g, int x, int y) {
-		font.draw(g, String.format("FPS: %d/%d\nIMG: %d/%d", getFPS(),
-				getMaxFPS(), map.imgCount, map.objImgCount), x, y);
+		font.draw(g, String.format("FPS: %d/%d\nIMG: %d", getFPS(),
+				getMaxFPS(), map.objImgCount), x, y);
 	}
 
 	@Override
