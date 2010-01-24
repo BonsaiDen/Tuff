@@ -92,7 +92,9 @@ public class MapEditor extends GameObject<Tuff> {
 
 	// Dialogs -----------------------------------------------------------------
 	public String levelPath() {
-		String path = getClass().getResource("/").getPath().substring(1)
+		String path = getClass().getResource("/")
+				.getPath()
+				.substring(1)
 				.replace("%20", " ");
 		path = path.substring(0, path.length() - 4) + "src/levels";
 		return path;
@@ -345,6 +347,10 @@ public class MapEditor extends GameObject<Tuff> {
 				oldTX = tx;
 				oldTY = ty;
 			}
+			if (edited) {
+				map.oldMX = -1;
+			}
+			
 			if (!input.mouseDown(MouseEvent.BUTTON1)
 					&& !input.mouseDown(MouseEvent.BUTTON3)) {
 				if (edited) {
@@ -545,6 +551,7 @@ public class MapEditor extends GameObject<Tuff> {
 				editMode2 = 4;
 			}
 		}
+		
 		// Render Map
 		if (changed && !input.mouseDown(MouseEvent.BUTTON1)
 				&& !input.mouseDown(MouseEvent.BUTTON3)) {

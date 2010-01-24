@@ -81,7 +81,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 	private BufferedImage loadingImage;
 
 	// Stuff
-	protected static boolean release = true;
+	protected static boolean release = false;
 
 	// Sound
 	private boolean musicActive = true;
@@ -324,8 +324,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 					Toolkit toolkit = Toolkit.getDefaultToolkit();
 					Dimension size = toolkit.getScreenSize();
 					int width = (int) size.getWidth()
-							- (getFrame().getInsets().left + getFrame()
-									.getInsets().right);
+							- (getFrame().getInsets().left + getFrame().getInsets().right);
 					width = (width / 16) * 16;
 
 					int height = (int) size.getHeight()
@@ -355,13 +354,12 @@ public final class Tuff extends org.bonsai.dev.Game {
 				try {
 					Calendar cal = Calendar.getInstance();
 					String foo = String.format(
-							"screenshot %d-%d-%d %d-%d-%d.png", cal
-									.get(Calendar.DATE), cal
-									.get(Calendar.MONTH) + 1, cal
-									.get(Calendar.YEAR), cal
-									.get(Calendar.HOUR_OF_DAY), cal
-									.get(Calendar.MINUTE), cal
-									.get(Calendar.SECOND));
+							"screenshot %d-%d-%d %d-%d-%d.png",
+							cal.get(Calendar.DATE),
+							cal.get(Calendar.MONTH) + 1,
+							cal.get(Calendar.YEAR),
+							cal.get(Calendar.HOUR_OF_DAY),
+							cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
 
 					ImageIO.write(image.getScreen(), "png", new File(
 							getBasePath() + foo));
