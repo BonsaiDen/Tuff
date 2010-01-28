@@ -136,7 +136,7 @@ public class TuffMap extends GameObject<Tuff> {
 	protected boolean noBorders = false;
 
 	// Cache
-	public BufferedImage mapCache = null;
+	private BufferedImage mapCache = null;
 	public int oldMX = -1;
 	public int oldMY = -1;
 
@@ -917,6 +917,28 @@ public class TuffMap extends GameObject<Tuff> {
 					}
 				}
 			}
+			
+			// Draw Trees
+			if (!wasteLand) {
+				for (int e = 0; e < localTrees.size(); e++) {
+					final int tree[] = localTrees.get(e);
+					final int ground = getAtTree(tree[1], tree[2]);
+					final int add = ground == 4 ? 1 : (ground == 2 ? 2 : 0);
+					final int x = (tree[1] - mapOffsetX) * tileSize;
+					if (tree[3] <= 3) {
+						final int y = ((tree[2] - mapOffsetY) - 1) * tileSize;
+						if (isVisible(x, y, 32, 32)) {
+							bg.drawImage(treeTiles[tree[3] + add * 4], x, y, null);
+						}
+					} else {
+						final int y = (tree[2] - mapOffsetY) * tileSize;
+						if (isVisible(x, y, 16, 16)) {
+							bg.drawImage(leafTiles[tree[3] - 4 + add * 5], x, y,
+									null);
+						}
+					}
+				}
+			}
 			bg.dispose();
 			oldMX = mapOffsetX;
 			oldMY = mapOffsetY;
@@ -924,30 +946,6 @@ public class TuffMap extends GameObject<Tuff> {
 
 		// Draw Cache Image
 		g.drawImage(mapCache, 0 - scrollOffsetX, 0 - scrollOffsetY, null);
-
-		// Draw Trees
-		if (!wasteLand) {
-			for (int e = 0; e < localTrees.size(); e++) {
-				final int tree[] = localTrees.get(e);
-				final int ground = getAtTree(tree[1], tree[2]);
-				final int add = ground == 4 ? 1 : (ground == 2 ? 2 : 0);
-				final int x = tree[1] * tileSize - screenOffsetX;
-				if (tree[3] <= 3) {
-					final int y = (tree[2] - 1) * tileSize - screenOffsetY;
-					if (isVisible(x, y, 32, 32)) {
-						g.drawImage(treeTiles[tree[3] + add * 4], x, y, null);
-						objImgCount++;
-					}
-				} else {
-					final int y = tree[2] * tileSize - screenOffsetY;
-					if (isVisible(x, y, 16, 16)) {
-						g.drawImage(leafTiles[tree[3] - 4 + add * 5], x, y,
-								null);
-						objImgCount++;
-					}
-				}
-			}
-		}
 
 		// Draw Enemies
 		// for(Enemy e : enemies) {
@@ -1096,12 +1094,14 @@ public class TuffMap extends GameObject<Tuff> {
 				final int tile[] = waterTileList.get(e);
 				g.drawImage(waterTiles[animation.get("water") + tile[2]],
 						tile[0] - scrollOffsetX, tile[1] - scrollOffsetY, null);
+				objImgCount++;
 			}
 
 			for (int e = 0; e < waterBorderList.size(); e++) {
 				final int tile[] = waterBorderList.get(e);
 				g.drawImage(borderTiles[1 + (4 - 1) * 16], tile[0]
 						- scrollOffsetX, tile[1] - scrollOffsetY, null);
+				objImgCount++;
 			}
 		}
 
@@ -1125,6 +1125,7 @@ public class TuffMap extends GameObject<Tuff> {
 						g.setComposite(AlphaComposite.getInstance(
 								AlphaComposite.SRC_OVER, 1.0f - img * 0.16f));
 						g.drawImage(blockTiles[img], x, y, null);
+						
 					} else {
 						g.setComposite(AlphaComposite.getInstance(
 								AlphaComposite.SRC_OVER, 1f));
@@ -1161,6 +1162,7 @@ public class TuffMap extends GameObject<Tuff> {
 						transparentData[t[2]][t[3]] == 1 ? tileTransparency
 								: (player.hasControl ? 1.0f : 0.5f)));
 				drawTile(g, t[0], t[1], t[2], t[3], 0, true);
+				objImgCount++;
 			}
 		}
 
