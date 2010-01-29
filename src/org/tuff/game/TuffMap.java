@@ -898,9 +898,9 @@ public class TuffMap extends GameObject<Tuff> {
 			waterBorderList.clear();
 			normalTileList.clear();
 			for (int y = mapOffsetY; y < mapOffsetY + screenHeight + 1; y++) {
-				if (y > 0 && y < mapHeight) {
+				if (y >= 0 && y < mapHeight) {
 					for (int x = mapOffsetX; x < mapOffsetX + screenWidth + 1; x++) {
-						if (x > 0 && x < mapWidth) {
+						if (x >= 0 && x < mapWidth) {
 							final int type = mapData[x][y];
 							final int tile = drawData[x][y];
 							if (tile > 0) {
