@@ -23,6 +23,7 @@
 
 package org.tuff.game;
 
+import java.applet.Applet;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -43,9 +44,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.bonsai.dev.SoundObjectWav;
+
 public final class Tuff extends org.bonsai.dev.Game {
 	private static final long serialVersionUID = 5085427564220826035L;
-
+	
 	// Main
 	public Player player;
 	public TuffMap map;
@@ -81,7 +84,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 	private BufferedImage loadingImage;
 
 	// Stuff
-	protected static boolean release = false;
+	protected static boolean release = true;
 
 	// Sound
 	private boolean musicActive = true;
@@ -107,6 +110,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 			player.setMap(map);
 
 			// Sound
+			sound.addType("wav", SoundObjectWav.class);
 			sound.addType("ogg", org.bonsai.dev.SoundObjectOgg.class);
 			// sound.addType("xm", org.bonsai.dev.SoundObjectXm.class);
 			sound.load("walk", "/sounds/walk.wav");
@@ -150,6 +154,10 @@ public final class Tuff extends org.bonsai.dev.Game {
 		}
 	}
 
+	public void initApplet(final Applet applet) {
+		backgroundColor = bgColor;
+	}
+	
 	// Menus -------------------------------------------------------------------
 	public void onMenu(String id) {
 		if (id.equals("music")) {
