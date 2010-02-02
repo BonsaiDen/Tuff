@@ -105,7 +105,7 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 			if (i < 1) {
 				i = 1;
 			}
-			int col = map.colAt(posX + offset, posY - i, true);
+			int col = map.colAt(posX + offset, posY - i);
 			if (col > 0) {
 				return col;
 			}
@@ -133,13 +133,13 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 	}
 
 	public boolean onBlock() {
-		return map.colAt(posX + rightCol, posY, false) == 9
-				|| map.colAt(posX + leftCol, posY, false) == 9;
+		return map.colAt(posX + rightCol, posY) == 9
+				|| map.colAt(posX + leftCol, posY) == 9;
 	}
 
 	public boolean onGround() {
-		int cl = map.colAt(posX + rightCol, posY, false);
-		int cr = map.colAt(posX + leftCol, posY, false);
+		int cl = map.colAt(posX + rightCol, posY);
+		int cr = map.colAt(posX + leftCol, posY);
 		if (cl == 1 || cl == 3) {
 			return true;
 		} else if (cr == 1 || cr == 3) {
@@ -227,7 +227,7 @@ public abstract class PlayerObject extends GameObject<Tuff> {
 			if (i > max) {
 				i = max;
 			}
-			int col = map.colAt(posX + i, posY + offset, true);
+			int col = map.colAt(posX + i, posY + offset);
 			if (col > 0) {
 				return col;
 			}

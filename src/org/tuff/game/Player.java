@@ -58,7 +58,7 @@ public class Player extends PlayerObject {
 
 	// Speed
 	private int speedSide = 0;
-	private int speedActive = 0;
+	protected int speedActive = 0;
 	private int speedHeight = 0;
 	private int speedPos = 0;
 
@@ -286,13 +286,15 @@ public class Player extends PlayerObject {
 			int soundSpeed = 170;
 			if (speedActive == 1) {
 				soundSpeed = 150;
+				
 			} else if (speedActive == 2) {
 				soundSpeed = 115;
+				
 			} else if (speedActive == 3) {
 				soundSpeed = 75;
 			}
 			if (onGround && timer.expired("walk", soundSpeed)) {
-				game.playSound("walk", true);
+				game.playSound((map.waterAt(posX, posY, false) && speedActive == 3) ? "splash" : "walk", true);
 				timer.set("walk");
 			}
 			if (inWater && !isDiving && timer.expired("swim")) {
@@ -620,7 +622,7 @@ public class Player extends PlayerObject {
 		int yp = posY;
 		playerHeight = 0;
 		while (playerHeight < 32) {
-			int col = map.colAt(posX, yp, false);
+			int col = map.colAt(posX, yp);
 			if (col > 0) {// || map.waterAt(posX, yp, false)) {
 				break;
 			}

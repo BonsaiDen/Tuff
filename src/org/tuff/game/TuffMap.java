@@ -654,7 +654,7 @@ public class TuffMap extends GameObject<Tuff> {
 	}
 
 	// Collision ---------------------------------------------------------------
-	public int colAt(final int x, final int y, final boolean player) {
+	public int colAt(final int x, final int y) {
 		final int tx = x / tileSize;
 		final int ty = y / tileSize;
 		if (x < 0 || tx < 0 || tx > mapWidth - 1 || y < 0 || ty < 0
@@ -695,13 +695,17 @@ public class TuffMap extends GameObject<Tuff> {
 		if ((mapData[tx][ty] == 1 || mapData[tx][ty] == 3)
 				&& colData[tx][ty] == 0) {
 			return mapData[tx][ty];
+		
+		} else if (game.player != null && game.player.speedActive == 3 && mapData[tx][ty] == 4){
+			return mapData[tx][ty];
+			
 		} else {
 			return colData[tx][ty] == 2 ? 1 : 0;
 		}
 	}
 
 	public boolean hasColAt(final int x, final int y) {
-		int col = colAt(x, y, false);
+		int col = colAt(x, y);
 		return col == 1 || col == 3;
 	}
 
