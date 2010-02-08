@@ -44,11 +44,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.bonsai.dev.SoundObjectWav;
-
 public final class Tuff extends org.bonsai.dev.Game {
 	private static final long serialVersionUID = 5085427564220826035L;
-	
+
 	// Main
 	public Player player;
 	public TuffMap map;
@@ -110,7 +108,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 			player.setMap(map);
 
 			// Sound
-			sound.addType("wav", SoundObjectWav.class);
+			sound.addType("wav", org.bonsai.dev.SoundObjectWav.class);
 			sound.addType("ogg", org.bonsai.dev.SoundObjectOgg.class);
 			// sound.addType("xm", org.bonsai.dev.SoundObjectXm.class);
 			sound.load("walk", "/sounds/walk.wav");
@@ -157,7 +155,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 	public void initApplet(final Applet applet) {
 		backgroundColor = bgColor;
 	}
-	
+
 	// Menus -------------------------------------------------------------------
 	public void onMenu(String id) {
 		if (id.equals("music")) {
@@ -232,6 +230,10 @@ public final class Tuff extends org.bonsai.dev.Game {
 		} else if (cmd.equals("edge")) {
 			map.noBorders = !map.noBorders;
 			map.tileGen.reset();
+			
+		} else if (cmd.equals("reset")) {
+			player.posX = map.startX * map.tileSize + 8;
+			player.posY = map.startY * map.tileSize + 16;
 		}
 	}
 
@@ -849,7 +851,7 @@ public final class Tuff extends org.bonsai.dev.Game {
 
 	// Init --------------------------------------------------------------------
 	public static void main(String[] args) {
-		new Tuff().frame("Tuff (c) 2009 by Ivo Wetzel", release ? 160 : 480,
-				release ? 144 : 480, release, true, true);
+		new Tuff().title("Tuff (c) 2009 by Ivo Wetzel").size(release ? 160 : 480,
+				release ? 144 : 480).scaled(release).menu(true, true).create();
 	}
 }
